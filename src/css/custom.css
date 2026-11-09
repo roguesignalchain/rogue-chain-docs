@@ -1,36 +1,187 @@
 /**
- * Custom styles for Rogue Signal Documentation
+ * High-Contrast Tactical Monochrome Theme for Rogue Signal Documentation
  */
 
-:root {
-  --ifm-color-primary: #e64c00;
-  --ifm-color-primary-dark: #cf4400;
-  --ifm-color-primary-darker: #c44100;
-  --ifm-color-primary-darkest: #a13500;
-  --ifm-color-primary-light: #ff5c0a;
-  --ifm-color-primary-lighter: #ff6414;
-  --ifm-color-primary-lightest: #ff7e3d;
-  --ifm-code-font-size: 95%;
-  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root,
+[data-theme='dark'] {
+  --ifm-color-primary: #ffffff;
+  --ifm-color-primary-dark: #f4f4f5;
+  --ifm-color-primary-darker: #e4e4e7;
+  --ifm-color-primary-darkest: #d4d4d8;
+  --ifm-color-primary-light: #ffffff;
+  --ifm-color-primary-lighter: #ffffff;
+  --ifm-color-primary-lightest: #ffffff;
+
+  --ifm-background-color: #000000;
+  --ifm-background-surface-color: #050505;
+  --ifm-navbar-background-color: #000000;
+  --ifm-footer-background-color: #000000;
+  --ifm-card-background-color: #0a0a0c;
+
+  --ifm-font-color-base: #d4d4d8;
+  --ifm-heading-color: #ffffff;
+  --ifm-font-family-base: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
+  --ifm-code-font-size: 90%;
+
+  --ifm-link-color: #ffffff;
+  --ifm-link-hover-color: #a1a1aa;
+  --ifm-link-decoration: none;
+
+  --ifm-navbar-link-hover-color: #ffffff;
+  --ifm-menu-color: #a1a1aa;
+  --ifm-menu-color-active: #ffffff;
+  --ifm-menu-color-background-active: rgba(255, 255, 255, 0.08);
+
+  --ifm-hr-border-color: rgba(255, 255, 255, 0.12);
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.10);
 }
 
-/* Rogue Signal Dark Tactical Theme */
-[data-theme='dark'] {
-  --ifm-color-primary: #ff5500;
-  --ifm-color-primary-dark: #e64c00;
-  --ifm-color-primary-darker: #d94800;
-  --ifm-color-primary-darkest: #b33b00;
-  --ifm-color-primary-light: #ff6a1a;
-  --ifm-color-primary-lighter: #ff7526;
-  --ifm-color-primary-lightest: #ff944d;
-  --ifm-background-color: #0a0a0c;
-  --ifm-background-surface-color: #121217;
-  --ifm-navbar-background-color: #0d0d10;
-  --ifm-footer-background-color: #070709;
-  --ifm-card-background-color: #121217;
-  --docusaurus-highlighted-code-line-bg: rgba(255, 85, 0, 0.15);
+/* Force dark canvas regardless of system preference */
+html {
+  background-color: #000000;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #000000;
+  color: #d4d4d8;
+}
+
+/* Technical Navbar */
+.navbar {
+  background-color: #000000 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.navbar__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff !important;
+}
+
+.navbar__item {
+  font-weight: 500;
+}
+
+/* Hero Section with Tactical Mask */
+.hero {
+  background-color: #000000;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  background-image: 
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: auto, 32px 32px, 32px 32px;
+}
+
+.hero__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.hero__subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  color: #a1a1aa;
+  font-size: 1.15rem;
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+}
+
+/* Tactical Buttons */
+.button.button--secondary {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #ffffff !important;
+  border-radius: 2px !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+.button.button--secondary:hover {
+  background: #d4d4d8 !important;
+  border-color: #d4d4d8 !important;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Feature Cards & Panels */
+.card,
+.col .padding-vert--md {
+  background: #0a0a0c;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 2px;
+  transition: border-color 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Sidebar Styling */
+.theme-doc-sidebar-container {
+  background-color: #050505 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.menu__link {
+  border-radius: 2px;
+  transition: all 0.15s ease;
+}
+
+.menu__link--active {
+  background: rgba(255, 255, 255, 0.10) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  border-left: 2px solid #ffffff;
+}
+
+/* Code Blocks & Terminal */
+pre {
+  background-color: #070709 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 2px !important;
+}
+
+code {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  border-radius: 2px;
+  padding: 0.15rem 0.35rem;
+}
+
+/* Footer */
+.footer {
+  background-color: #000000 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.footer__title {
+  color: #ffffff;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.footer__link-item {
+  color: #a1a1aa;
+}
+
+.footer__link-item:hover {
+  color: #ffffff;
 }
 
 /* Custom Scrollbar */
@@ -40,30 +191,25 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0c;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #23232b;
-  border-radius: 3px;
+  background: #27272a;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff5500;
+  background: #52525b;
 }
 
-/* Subtle border accents */
-.navbar {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Badge styling */
+/* Tactical HUD Badges */
 .badge--rogue {
-  background-color: rgba(255, 85, 0, 0.15);
-  color: #ff5500;
-  border: 1px solid rgba(255, 85, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
 }

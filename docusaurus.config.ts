@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Rogue Signal',
   tagline: 'Decentralized Proof-of-Work Blockchain Powered by RandomX',
-  favicon: 'img/logo.svg',
+  favicon: 'img/logo.png',
 
   // Production URL for GitHub Pages / Custom Subdomain
   url: 'https://docs.roguechain.org',
@@ -82,17 +82,17 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/logo.svg',
+    image: 'img/logo.png',
     colorMode: {
       defaultMode: 'dark',
-      disableSwitch: false,
+      disableSwitch: true,
       respectPrefersColorScheme: false,
     },
     navbar: {
-      title: 'Rogue Signal',
+      title: 'ROGUE SIGNAL',
       logo: {
-        alt: 'Rogue Signal Logo',
-        src: 'img/logo.svg',
+        alt: 'Rogue Signal Tactical Insignia',
+        src: 'img/logo.png',
       },
       items: [
         {
@@ -100,6 +100,11 @@ const config: Config = {
           sidebarId: 'docsSidebar',
           position: 'left',
           label: 'Docs',
+        },
+        {
+          to: '/docs/brand/brand-overview',
+          label: 'Brand & Identity',
+          position: 'left',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
@@ -122,6 +127,10 @@ const config: Config = {
             {
               label: 'Overview & Parameters',
               to: '/docs/intro',
+            },
+            {
+              label: 'Brand & Design System',
+              to: '/docs/brand/brand-overview',
             },
             {
               label: 'Core Node Setup',

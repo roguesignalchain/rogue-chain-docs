@@ -5,6 +5,17 @@ const sidebars: SidebarsConfig = {
     'intro',
     {
       type: 'category',
+      label: 'Brand & Identity',
+      collapsed: false,
+      items: [
+        'brand/brand-overview',
+        'brand/logo-assets',
+        'brand/typography-colors',
+        'brand/ui-components',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Core Chain (Node)',
       collapsed: false,
       items: [
