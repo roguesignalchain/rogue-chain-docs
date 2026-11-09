@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Rogue Signal',
   tagline: 'Decentralized Proof-of-Work Blockchain Powered by RandomX',
-  favicon: 'img/logo.png',
+  favicon: 'img/icon.png',
 
   // Production URL for GitHub Pages / Custom Subdomain
   url: 'https://docs.roguechain.org',
@@ -82,7 +82,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/logo.png',
+    image: 'img/icon.png',
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: true,
@@ -91,8 +91,8 @@ const config: Config = {
     navbar: {
       title: 'ROGUE SIGNAL',
       logo: {
-        alt: 'Rogue Signal Tactical Insignia',
-        src: 'img/logo.png',
+        alt: 'Rogue Signal Technical Isotype',
+        src: 'img/icon.png',
       },
       items: [
         {

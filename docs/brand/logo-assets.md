@@ -1,42 +1,77 @@
 ---
 id: logo-assets
-title: Official Logo & Insignia
+title: Official Logo & Insignia Architecture
 sidebar_label: Logo & Assets
 sidebar_position: 2
 ---
 
-# Official Logo & Insignia
+# Official Logo & Insignia Architecture
 
-The Rogue Signal insignia serves as the sovereign visual seal of the protocol across nodes, desktop software, documentation hubs, and network telemetry.
-
----
-
-## Canonical Insignia
-
-The official logo is located at:
-```
-/media/carlos/DATA1/DEV/blockchain_pow/recursos/imagenes/rogue-signal.logo-rrss.png
-```
-
-![Rogue Signal Official Insignia](/img/logo.png)
-
-### Conceptual Geometry
-* **Outer Hexagonal Vault:** Reflects cryptographic hash matrices and block sealing security.
-* **CPU Silicon Lattice:** Represents CPU-democratized RandomX (`rx/0`) computation.
-* **Defiant Signal Sigil:** Stylized skull and beacon architecture communicating resilience against ASIC cartels and censorship.
+The Rogue Signal protocol visual identity operates under a dual-tier taxonomy:
+1. **Marketing & Community Insignia:** High-impact tactical sigil for public branding, social media, releases, and promotion.
+2. **Technical Development Isotypes:** Transparent, precision glyphs engineered for desktop applications, dark/light UI headers, CLI utilities, and favicons.
 
 ---
 
-## Safe Zone & Clear Space
+## 1. Marketing & Community Insignia
 
-To preserve visual authority and avoid clutter, maintain a clear space surrounding the insignia of at least half its diameter ($0.5X$):
+* **Canonical File:** `/recursos/imagenes/rogue-signal.logo-rrss.png` (900×900px, RGB)
+* **Application:** Social media avatars (X/Twitter, Telegram, Discord), press kits, GitHub organization avatar, and community release notes.
+
+![Rogue Signal Marketing Insignia](/img/logo.png)
+
+---
+
+## 2. Technical Development Isotypes
+
+For software interfaces, navigation headers, desktop window chrome, and application shortcuts, use the transparent vector-quality isotypes:
+
+### White Technical Isotype (Dark Surfaces & UI)
+* **File Location:** `/recursos/imagenes/roguechain-icon.png` (1254×1254px, RGBA)
+* **Optimized Sizes:** `/recursos/iconos/roguechain-icon-white-[16|22|32|64|128|256|512].png`
+* **Use Cases:**
+  * Dark-mode headers and navigation bars (`#000000` / `#050505`).
+  * Desktop Client UI header (`rogue-desktop-client`).
+  * Official browser favicon.
+  * System tray / status bar icon (22×22px).
+
+![Rogue Signal White Isotype](/img/icon.png)
+
+---
+
+### Black Technical Isotype (Light Surfaces & Print)
+* **File Location:** `/recursos/imagenes/roguechain-icon-black.png` (1254×1254px, RGBA)
+* **Optimized Sizes:** `/recursos/iconos/roguechain-icon-black-[size].png`
+* **Use Cases:**
+  * Printed white technical documentation and paper wallets.
+  * Inverted white buttons and solid white UI callout boxes (`bg-white text-black`).
+  * Light desktop environments or light system taskbars.
+
+---
+
+## 3. Implementation Standards & Resolution Matrix
+
+| Asset | File | Target Usage | Recommended Size |
+| :--- | :--- | :--- | :--- |
+| **Browser Favicon** | `roguechain-icon.png` | Web & Documentation Hub tabs | `32×32px` / `16×16px` |
+| **Navbar Header** | `roguechain-icon.png` | App & Web headers (with Space Grotesk) | `32px` height |
+| **Desktop App Chrome** | `roguechain-icon.png` | Tauri client main window bar | `28px – 32px` |
+| **Tauri App Icon** | `src-tauri/icons/` | Executable launcher & OS taskbar | Multi-size (`.ico`, `.png`) |
+| **System Tray Icon** | `roguechain-icon-white-22x22.png` | Background node daemon in system tray | `22×22px` |
+| **Community Marketing**| `rogue-signal.logo-rrss.png` | Twitter, Discord, Release assets | `900×900px` |
+
+---
+
+## 4. Clear Space & Safe Margin
+
+Preserve a clear boundary around the technical isotype equal to at least half its dimension ($0.5X$):
 
 ```
        [+]───────────────────────────────────────[+]
        │                 0.5X                     │
        │         ┌───────────────────┐            │
        │         │                   │            │
-       │  0.5X   │   ROGUE INSIGNIA  │    0.5X    │
+       │  0.5X   │  TECHNICAL ISOTYPE│    0.5X    │
        │         │                   │            │
        │         └───────────────────┘            │
        │                 0.5X                     │
@@ -45,20 +80,8 @@ To preserve visual authority and avoid clutter, maintain a clear space surroundi
 
 ---
 
-## Size Standards
+## 5. Misuse Restrictions
 
-| Application | Recommended Dimensions | Format | Usage Notes |
-| :--- | :--- | :--- | :--- |
-| **App Navbar / Web Header** | `32px – 40px` height | PNG / SVG | Paired with `ROGUE SIGNAL` wordmark |
-| **Favicon / Desktop App Tray** | `16px`, `32px`, `48px` | ICO / PNG | High-contrast white silhouette on black |
-| **Hero Focal Emblem** | `128px – 256px` | PNG / SVG | Placed above or beside hero headlines |
-| **Social Media & Releases** | `900px × 900px` | PNG | Centered on `#000000` canvas with 15% inner padding |
-
----
-
-## Misuse & Restrictions
-
-To maintain brand integrity:
-* ❌ **Never apply colors, tints, or gradients** to the emblem. It must strictly remain pure white on black (or inverted black on white where explicitly specified).
-* ❌ **Never stretch, skew, or deform** the aspect ratio.
-* ❌ **Never place the logo directly over busy imagery** without an obsidian backdrop or gradient mask.
+* ❌ **Never apply colors or gradients:** Both isotypes must remain strictly pure white (`#FFFFFF`) or pure black (`#000000`).
+* ❌ **Never invert inappropriately:** Do not place `roguechain-icon.png` (white) on light backgrounds; always use `roguechain-icon-black.png`.
+* ❌ **Never deform the aspect ratio:** Maintain strict 1:1 square aspect ratio.
