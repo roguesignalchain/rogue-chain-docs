@@ -8,7 +8,7 @@ const config: Config = {
   favicon: 'img/logo.svg',
 
   // Production URL for GitHub Pages / Custom Subdomain
-  url: 'https://docs.roguesignal.org',
+  url: 'https://docs.roguechain.org',
   baseUrl: '/',
 
   // GitHub Pages deployment config

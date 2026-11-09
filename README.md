@@ -2,7 +2,7 @@
 
 Official technical documentation website for the **Rogue Signal (ROGUE)** blockchain, built with [Docusaurus](https://docusaurus.io/) with full TypeScript support, bilingual internationalization (English & Spanish), and offline local search.
 
-* **Live Subdomain:** [docs.roguesignal.org](https://docs.roguesignal.org)
+* **Live Subdomain:** [docs.roguechain.org](https://docs.roguechain.org)
 * **GitHub Repository:** [roguesignalchain/rogue-docs](https://github.com/roguesignalchain/rogue-docs)
 
 ---
@@ -60,9 +60,9 @@ pnpm write-translations --locale es
 
 ---
 
-## 🚀 Deployment (GitHub Pages)
+## 🚀 Continuous Deployment (GitHub Pages)
 
-The static build generated in `build/` can be served on GitHub Pages or any static CDN (such as Cloudflare Pages or Vercel).
+Whenever changes are pushed to the `main` branch, the GitHub Actions workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) automatically builds and deploys the static documentation site to GitHub Pages.
 
 The custom domain is preserved across builds via [`static/CNAME`](static/CNAME).
 
