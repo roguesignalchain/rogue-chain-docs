@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" fill="none">
+  <defs>
+    <linearGradient id="rogueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5500" />
+      <stop offset="100%" stop-color="#ffb300" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="36" height="36" rx="8" fill="url(#rogueGrad)" />
+  <rect x="4" y="4" width="32" height="32" rx="6" fill="#0a0a0c" />
+  <!-- Radio signal / broadcast icon -->
+  <circle cx="20" cy="20" r="3" fill="#ff5500" />
+  <path d="M14 14 A8.5 8.5 0 0 0 14 26" stroke="#ff5500" stroke-width="2" stroke-linecap="round" fill="none" />
+  <path d="M26 14 A8.5 8.5 0 0 1 26 26" stroke="#ff5500" stroke-width="2" stroke-linecap="round" fill="none" />
+  <path d="M10 10 A14 14 0 0 0 10 30" stroke="#ffb300" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.85" />
+  <path d="M30 10 A14 14 0 0 1 30 30" stroke="#ffb300" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.85" />
+</svg>
