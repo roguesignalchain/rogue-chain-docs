@@ -49,6 +49,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'network/consensus-parameters',
         'network/seed-rotation',
+        'network/security-architecture-adr',
       ],
     },
     {

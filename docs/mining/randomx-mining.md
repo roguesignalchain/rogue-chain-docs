@@ -22,9 +22,9 @@ To mine directly from the core node daemon into your recipient address:
 ```
 
 ### Solo Mining Parameters
-* `--mine`: Enables the internal miner thread engine.
-* `--miner.threads <N>`: Sets the number of CPU threads allocated to hashing.
-* `--miner.etherbase <0x...>`: Destination address where all block rewards (7.6 ROGUE per block) are deposited.
+* `--mine`: Enables the internal RandomX CPU miner thread engine.
+* `--miner.threads <N>`: Sets the number of CPU threads allocated to hashing (100% user-configurable; optimal efficiency is `L3 Cache (MiB) / 2`).
+* `--miner.etherbase <0x...>`: Destination address where all block rewards (**22.8 ROGUE** per block + 100% of block transaction fees) are deposited.
 
 ---
 
@@ -34,14 +34,16 @@ For users who prefer a graphical interface:
 
 1. Open **Rogue Desktop Client**.
 2. Navigate to the **Miner** tab.
-3. Select the number of CPU mining threads using the slider.
+3. Select the number of CPU mining threads using the slider and toggle **Fast Mode (2080 MiB RAM)** if your system has sufficient memory.
 4. Click **Start Mining**.
 5. Live hash rate, accepted hashes, and discovered blocks will update in real time.
 
 ---
 
-## 🏊 Stratum Pool Mining
+## 🛡️ Anti-Farm Architecture: Full-Node Solo Mining Only (No Stratum / No `eth_getWork`)
 
-Mining pools allow miners with smaller hash rates to combine computing power and earn steady, proportional rewards.
+To protect network decentralization and prevent industrial mining farms or cloud botnets from pointing hundreds of lightweight stateless workers (`XMRig`) at a single node:
 
-Standard stratum mining protocols connect to pool endpoints via TCP using dedicated RandomX mining clients (such as modified XMRig or native Rogue miner tools).
+* **External Stratum Bridges & `eth_getWork` Are Disabled:** The `eth_getWork`, `eth_submitWork`, and `eth_submitHashrate` RPC methods are permanently disabled at the consensus layer (`consensus/randomx/api.go`).
+* **1 Node = 1 Independent Miner:** Every machine participating in Proof-of-Work must run a fully synchronized `core-rogue` EVM node with its own chain state and its own 2080 MiB RandomX RAM dataset.
+* **Zero Artificial Yield Penalties:** Every valid PoW block receives 100% of its **24 ROGUE** emission (`22.8 ROGUE` to the miner and `1.2 ROGUE` to the protocol treasury) immediately upon inclusion.

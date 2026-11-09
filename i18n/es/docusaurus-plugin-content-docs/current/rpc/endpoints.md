@@ -92,3 +92,89 @@ curl -X POST -H "Content-Type: application/json" \
   "result": "0x12"
 }
 ```
+
+---
+
+## ⚡ Métodos de Consenso y Minería RandomX (`randomx_*`)
+
+El motor de consenso RandomX expone métodos dedicados de diagnóstico y control bajo los namespaces `randomx` y `eth`. Nota: los métodos RPC de minería externa (`eth_getWork`, `eth_submitWork`, `eth_submitHashrate`) están deshabilitados permanentemente por diseño para garantizar la minería exclusiva con nodo completo.
+
+### `randomx_getConsensusStatus`
+Devuelve en tiempo real los parámetros de consenso, altura de bloque actual, dificultad activa, desglose de recompensa (`24 ROGUE`: `22.8` minero / `1.2` tesorería), cuenta regresiva para el halving y defensas Anti-51% activas (`MaxReorgDepth = 90`, `ECBP-1100 MESS`).
+
+#### Petición
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"randomx_getConsensusStatus","params":[],"id":1}' \
+  http://127.0.0.1:8545
+```
+
+#### Respuesta
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "algorithm": "RandomX (rx/0)",
+    "blockNumber": 120,
+    "currentDifficulty": "68420",
+    "targetBlockTime": 30,
+    "lwmaWindow": 60,
+    "mtpWindow": 11,
+    "maxFutureDrift": 15,
+    "maxReorgDepth": 90,
+    "maxExtraDataSize": 64,
+    "messEnabled": true,
+    "halvingInterval": 2100000,
+    "currentEra": 0,
+    "nextHalvingBlock": 2100000,
+    "blocksUntilHalving": 2099880,
+    "baseRewardWei": "24000000000000000000",
+    "minerRewardWei": "22800000000000000000",
+    "treasuryRewardWei": "1200000000000000000",
+    "treasuryAddress": "0xe9aae535b7971a9ac8c6af0e4b524d02260d3a03",
+    "fastMode": false,
+    "hashrate": 1450
+  }
+}
+```
+
+---
+
+### `randomx_getEpochInfo`
+Devuelve los metadatos de la época de semilla RandomX actual, el bloque semilla (`E * 2048 - 64`), el hash de semilla activo de 256 bits y la ventana de precomputación de la siguiente época (`SeedLag = 64` bloques).
+
+#### Petición
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"randomx_getEpochInfo","params":[],"id":1}' \
+  http://127.0.0.1:8545
+```
+
+#### Respuesta
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "blockNumber": 120,
+    "epoch": 0,
+    "epochLength": 2048,
+    "seedLag": 64,
+    "seedBlock": 0,
+    "seedHash": "0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d",
+    "nextEpochBlock": 2048,
+    "blocksRemaining": 1928,
+    "nextSeedBlock": 1984,
+    "nextSeedReady": false,
+    "fastMode": false
+  }
+}
+```
+
+---
+
+### `randomx_getHashrate` / `randomx_setFastMode` / `randomx_getFastMode`
+* `randomx_getHashrate`: Devuelve la tasa de hash interna del minero RandomX del nodo en hashes por segundo (`uint64`).
+* `randomx_setFastMode(bool)`: Alterna entre **Light Mode** (~256 MiB en caché) y **Fast Mode** (~2080 MiB de dataset en RAM) para el siguiente contexto RandomX inicializado.
+* `randomx_getFastMode()`: Devuelve `true` si el modo rápido está habilitado.
