@@ -1,9 +1,9 @@
-# Rogue Signal Documentation Hub (`rogue-docs`)
+# Rogue Signal Documentation Hub (`rogue-chain-docs`)
 
 Official technical documentation website for the **Rogue Signal (ROGUE)** blockchain, built with [Docusaurus](https://docusaurus.io/) with full TypeScript support, bilingual internationalization (English & Spanish), and offline local search.
 
 * **Live Subdomain:** [docs.roguechain.org](https://docs.roguechain.org)
-* **GitHub Repository:** [roguesignalchain/rogue-docs](https://github.com/roguesignalchain/rogue-docs)
+* **GitHub Repository:** [roguesignalchain/rogue-chain-docs](https://github.com/roguesignalchain/rogue-chain-docs)
 
 ---
 

@@ -13,7 +13,7 @@ const config: Config = {
 
   // GitHub Pages deployment config
   organizationName: 'roguesignalchain',
-  projectName: 'rogue-docs',
+  projectName: 'rogue-chain-docs',
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
@@ -46,7 +46,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/roguesignalchain/rogue-docs/tree/main/',
+          editUrl: 'https://github.com/roguesignalchain/rogue-chain-docs/tree/main/',
         },
         blog: {
           showReadingTime: true,
@@ -54,7 +54,7 @@ const config: Config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          editUrl: 'https://github.com/roguesignalchain/rogue-docs/tree/main/',
+          editUrl: 'https://github.com/roguesignalchain/rogue-chain-docs/tree/main/',
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
