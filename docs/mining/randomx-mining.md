@@ -46,4 +46,4 @@ To protect network decentralization and prevent industrial mining farms or cloud
 
 * **External Stratum Bridges & `eth_getWork` Are Disabled:** The `eth_getWork`, `eth_submitWork`, and `eth_submitHashrate` RPC methods are permanently disabled at the consensus layer (`consensus/randomx/api.go`).
 * **1 Node = 1 Independent Miner:** Every machine participating in Proof-of-Work must run a fully synchronized `core-rogue` EVM node with its own chain state and its own 2080 MiB RandomX RAM dataset.
-* **Zero Artificial Yield Penalties:** Every valid PoW block receives 100% of its **25 ROGUE** emission (`23.75 ROGUE` to the miner and `1.255 ROGUE` to the protocol treasury) immediately upon inclusion.
+* **Zero Artificial Yield Penalties:** Every valid PoW block receives 100% of its **25 ROGUE** emission (`23.75 ROGUE` to the miner and `1.25 ROGUE` to the protocol treasury) immediately upon inclusion.

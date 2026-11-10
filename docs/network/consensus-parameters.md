@@ -25,6 +25,7 @@ Where:
 
 ### Why LWMA-1?
 * **Candidate Timestamp Independence:** Block `N` difficulty is computed exclusively from closed historical blocks (`N-k .. N-1`). A miner cannot manipulate their own candidate `header.Time` to lower their block's difficulty.
+* **Deterministic Ancestor Verification:** If any intermediate ancestor block in the LWMA-1 observation window is missing, the engine deterministically rejects verification with `consensus.ErrUnknownAncestor` instead of falling back to stale difficulty values.
 * **Instant response:** Adjusts smoothly to sudden hashing spikes or drops.
 * **Resistance to rental & flash-mining attacks:** Hashpower rented for short intervals cannot game difficulty downward before leaving the network stranded.
 
@@ -40,6 +41,8 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
    * A candidate block's timestamp cannot exceed the local node's current wall-clock time by more than **15 seconds**. Blocks drifting further into the future are rejected.
 3. **Header `ExtraData` Cap (`64 bytes`) & Two-Phase Parallel Verification:**
    * `header.Extra` is strictly capped at `64 bytes` (`MaxExtraDataSize`). `VerifyHeaders` validates lightweight header rules in microseconds before dispatching RandomX `VerifySeal` across `runtime.NumCPU()` parallel workers.
+4. **Strict Uncle Block Prohibition (`UncleHash == EmptyUncleHash`):**
+   * `header.UncleHash` must strictly equal `types.EmptyUncleHash`. Rogue Signal adopts the pure Bitcoin single-chain tree model (`ErrUnclesNotAllowed`), eliminating uncle malleability and uncle-grinding vulnerabilities.
 
 ---
 
@@ -57,7 +60,7 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
 ## 💰 Emission Schedule & Halving
 
 * **Initial Block Reward:** 25 ROGUE
-* **Halving Cadence:** Every 2,000,000 blocks (~1.90 years / ~694.44 days (~1.90 years) at 30s per block)
+* **Halving Cadence:** Every 2,000,000 blocks (~1.90 years / ~694.44 days at 30s per block)
 * **Miner Share (95%):** 23.75 ROGUE initially (+ 100% of block transaction fees)
-* **Treasury Share (5%):** 1.255 ROGUE initially
-* **Total Supply Cap:** 100,000,000 ROGUE (100.8M exact across 32 halving eras, zero tail emission)
+* **Treasury Share (5%):** 1.25 ROGUE initially
+* **Total Supply Cap:** 100,000,000 ROGUE (exact mathematical limit across 32 halving eras: 25 * 2,000,000 * 2 = 100,000,000 ROGUE, zero tail emission)

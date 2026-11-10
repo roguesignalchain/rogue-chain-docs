@@ -19,9 +19,9 @@ Este documento constituye la referencia oficial de ingeniería, seguridad y crip
 | **Algoritmo PoW** | `RandomX (rx/0)` | `consensus/randomx/` | Resistencia a ASICs y GPUs mediante ejecución en CPU y caché L3 |
 | **Tiempo Objetivo de Bloque (`T`)** | `30 segundos` | `DefaultTargetBlockTime` (`difficulty.go`) | Minimiza bloques huérfanos (`< 0.5%`) en enlaces domésticos sin Uncles |
 | **Recompensa Base Inicial** | `25 ROGUE` | `InitialBaseReward` (`rewards.go`) | Escalada `3x` para bloques de 30s preservando la curva bianual |
-| **Distribución de Recompensa** | `95% Minero / 5% Tesorería` | `SplitReward` (`rewards.go`) | `23.75 ROGUE` al minero / `1.255 ROGUE` al fondo de desarrollo del protocolo |
+| **Distribución de Recompensa** | `95% Minero / 5% Tesorería` | `SplitReward` (`rewards.go`) | `23.75 ROGUE` al minero / `1.25 ROGUE` al fondo de desarrollo del protocolo |
 | **Intervalo de Halving** | `2,000,000 bloques` (~1.90 años) | `HalvingInterval` (`rewards.go`) | Reducción a la mitad cada `2,000,000 * 30s` (~694.44 días (~1.90 años)) |
-| **Suministro Máximo (Hard Cap)** | `100,000,000 ROGUE` (100.8M exacto) | `MaxSupplyCap` (`rewards.go`) | Techo estricto en 32 eras (`MaxHalvingEras = 32`), cero tail emission |
+| **Suministro Máximo (Hard Cap)** | `100,000,000 ROGUE` | `MaxSupplyCap` (`rewards.go`) | Techo matemático estricto en 32 eras (`MaxHalvingEras = 32`), cero tail emission |
 | **Ajuste de Dificultad (DAA)** | `LWMA-1 (N = 60)` | `CalculateDifficulty` (`difficulty.go`) | Ventana móvil ponderada de 60 bloques (~30 min), clamp `+-33%` por bloque |
 | **Dificultad Mínima / Génesis** | `0x10000` (`65,536`) | `MinDifficulty` (`difficulty.go`) | Arranque fluido para CPUs domésticas (~2.1 KH/s) |
 | **Regla Temporal Pasada** | `MTP-11 Estricto` | `CalculateMTP11` (`difficulty.go`) | `header.Time > Mediana(últimos 11 bloques)` |
@@ -29,14 +29,14 @@ Este documento constituye la referencia oficial de ingeniería, seguridad y crip
 | **Defensa Anti-51% (Capa 1)** | `MaxReorgDepth = 90 bloques` | `MaxRogueReorgDepth` (`forkchoice.go`) | Finalidad rodante dura (~45 min); rechaza reorganizaciones profundas |
 | **Defensa Anti-51% (Capa 2)** | `ECBP-1100 (MESS)` desde Bloque 0 | `ECBP1100FBlock = 0` (`blockchain_af.go`) | Penalización polinómica exigiendo hasta `31x` TD a cadenas secretas |
 | **Anti-Selfish Mining (Capa 3)** | `Desempate Eyal-Sirer` | `ReorgNeeded` (`forkchoice.go`) | Preserva bloque local o desempata con `crypto/rand` (50/50) |
-| **Política de Bloques Uncle** | `Prohibidos (ErrUnclesNotAllowed)` | `VerifyUncles` (`randomx.go`) | Modelo Bitcoin puro; elimina vectores de Uncle Grinding |
+| **Política de Bloques Uncle** | `Prohibidos (ErrUnclesNotAllowed)` | `VerifyUncles` / `verifyHeader` | Modelo Bitcoin puro (`header.UncleHash == EmptyUncleHash`) |
 | **Rotación de Semilla RandomX** | `2048 bloques` (~17.07 horas) | `EpochLength` (`epoch.go`) | Época estándar `rx/0` con `SeedLag = 64` bloques (~32 min precomputación) |
 | **Tamaño Máximo de `ExtraData`** | `64 bytes` | `MaxExtraDataSize` (`randomx.go`) | Permite etiquetas descriptivas e impide ataques de Header Bloat DoS |
 | **Límite de Gas por Bloque** | `60,000,000 gas` (`0x3938700`) | `genesis_rogue.go` / `miner.go` | Alta capacidad EVM por cada bloque de 30 segundos |
 | **Modelo de Comisiones EVM** | `PoW Clásico (100% al Minero)` | `config_rogue.go` / `ethconfig` | Sin quema EIP-1559; las comisiones sostienen a los mineros a largo plazo |
 | **Precio Mínimo de Gas (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | Protección anti-spam de transacciones gratuitas en el mempool P2P |
 | **Hash del Bloque Génesis (Bloque 0)** | `0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d` | `RogueGenesisHash` (`genesis_rogue.go`) | Fijado en `RequireBlockHashes[0]` para aislamiento criptográfico P2P |
-| **Inscripción del Bloque Génesis** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.256` | `genesis.json` / `genesis_rogue.go` | Inscripción fundacional de 60 bytes grabada en el Bloque 0 |
+| **Inscripción del Bloque Génesis** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | Inscripción fundacional de 60 bytes grabada en el Bloque 0 |
 
 ---
 
@@ -58,11 +58,11 @@ P(delta_t < tau) = 1 - exp(-tau / T)
 1. **Aumentar `DefaultTargetBlockTime` de `10` a `30` segundos** en `consensus/randomx/difficulty.go`:
    * Con `T = 30s`, la probabilidad de colisión en `< 1s` cae del `9.5%` al **`3.2%`**, reduciendo la tasa global de bloques huérfanos a **`< 0.5%`**.
 2. **Escalado Monetario Proporcional (`3x`)** en `consensus/randomx/rewards.go`:
-   * **Recompensa Base Inicial (`InitialBaseReward`)**: Sube de `8 ROGUE` a **`25 ROGUE`** por bloque (`23.75 ROGUE` para el minero [95%] y `1.255 ROGUE` para la tesorería del protocolo [5%]).
-   * **Intervalo de Halving (`HalvingInterval`)**: Se ajusta de `6,300,000` bloques a **`2,000,000` bloques** (~1.90 años exactos a 30s/bloque: `2,000,000 * 30s = 63,000,000 segundos` ~ `729.16 días`).
+   * **Recompensa Base Inicial (`InitialBaseReward`)**: Sube de `8 ROGUE` a **`25 ROGUE`** por bloque (`23.75 ROGUE` para el minero [95%] y `1.25 ROGUE` para la tesorería del protocolo [5%]).
+   * **Intervalo de Halving (`HalvingInterval`)**: Se ajusta de `6,300,000` bloques a **`2,000,000` bloques** (~1.90 años a 30s/bloque: `2,000,000 * 30s = 60,000,000 segundos` ~ `694.44 días`).
    * **Invarianza del Suministro Total**:
      ```text
-     Suministro Total = sum_{k=0..31} (24 / 2^k) * 2,000,000 = 100,000,000 ROGUE (100M Hard Cap)
+     Suministro Total = sum_{k=0..31} (25 / 2^k) * 2,000,000 = 100,000,000 ROGUE (100M Hard Cap Exacto)
      ```
      El calendario bianual de halvings y el suministro máximo de ~100M ROGUE permanecen 100% invariantes.
 
@@ -125,24 +125,29 @@ Implementamos una **Defensa de Elección de Bifurcación (Fork-Choice) de Tres C
 
 1. **Independencia del Timestamp Candidato en `LWMA-1`**:
    * En `consensus/randomx/difficulty.go`, `CalculateDifficulty(chain, time, parent)` calcula la dificultad del bloque `N` exclusivamente a partir de los bloques históricos cerrados `[N-k .. N-1]`. Un minero no puede manipular el `header.Time` de su bloque candidato para reducir su propia dificultad.
-2. **Acotamiento de Solvetime y Clamping por Bloque (`+-33%`)**:
+2. **Verificación Determinista de Ancestros**:
+   * Si falta algún bloque ancestro intermedio en la ventana de observación de LWMA-1, `CalculateDifficulty` retorna deterministamente `consensus.ErrUnknownAncestor` en lugar de caer en fallbacks silenciosos con dificultades desactualizadas.
+3. **Acotamiento de Solvetime y Clamping por Bloque (`+-33%`)**:
    * Los tiempos de resolución individuales en la ventana LWMA-1 de 60 bloques se acotan a `[1s, 6 * T = 180s]`, y el cambio de dificultad por bloque se restringe entre el **`67%`** (`MaxClampDownFactor`) y el **`133%`** (`MaxClampUpFactor`) de `parent.Difficulty`.
-3. **Regla Estricta `MTP-11` + `15s` de Deriva Futura Máxima + Alineación en `Prepare()`**:
+4. **Regla Estricta `MTP-11` + `15s` de Deriva Futura Máxima + Alineación en `Prepare()`**:
    * `VerifyHeaderTime` exige `header.Time > CalculateMTP11(chain, parent)` y `header.Time <= now + 15`.
    * En `RandomX.Prepare` (`consensus/randomx/randomx.go`), si marcas de tiempo desordenadas en los últimos 11 bloques provocan que `header.Time <= CalculateMTP11(chain, parent)`, `Prepare` adelanta automáticamente `header.Time = mtp + 1` para que el minero local jamás selle un bloque que viole `ErrOlderBlockTime`.
 
 ---
 
-### ADR-005: Seguridad de Memoria CGo, Invalidación de Semilla ante Reorgs y `VerifyHeaders` Paralelo en Dos Fases
+### ADR-005: Seguridad de Memoria CGo, Concurrencia de Contextos y `VerifyHeaders` Paralelo en Dos Fases
 
-1. **Corrección del Bug CGo `Use-After-Free` en `RxContext.CalculateHash` (`consensus/randomx/rx_cgo.go`)**:
+1. **Corrección de Bug `Use-After-Free` y Defensa ante Nil-VM en `RxContext.CalculateHash` (`consensus/randomx/rx_cgo.go`)**:
    * `ctx.mu.RLock()` se mantiene activo mediante `defer ctx.mu.RUnlock()` durante toda la ejecución de `CalculateHash`, impidiendo que `ctx.Close()` libere la memoria C++ del dataset/cache mientras algún hilo continúa calculando un hash.
-2. **Validación Cruzada Canónica de Semilla ante Reorgs en `EpochManager.GetSeed` (`consensus/randomx/epoch.go`)**:
-   * `GetSeed` verifica que la semilla en caché para la época `E` coincida con el hash canónico actual en `SeedBlockNumber(E) = E * 2048 - 64`. Si una reorganización legítima modifica el bloque semilla, el contexto obsoleto se cierra y reconstruye automáticamente.
+   * `CalculateHash` verifica de forma defensiva el tipo de interfaz y punteros crudos C (`!ok || vm == nil || vm.raw == nil`), devolviendo un error estructurado en lugar de provocar fallos de segmentación o panics bajo presión de memoria.
+2. **Límite de Concurrencia de Épocas y Acotamiento de Contextos (`consensus/randomx/epoch.go`)**:
+   * `EpochManager` utiliza un semáforo interno (`allocSem`, capacidad 2) para limitar asignaciones CGo concurrentes de dataset, protegiendo a los nodos de ataques DoS por agotamiento de RAM ante anuncios de cabeceras en conflicto.
+   * Los contextos en caché están estrictamente acotados a `MaxCachedContexts = 3` con desalojo LRU por época.
+   * Se eliminó el borrado prematuro de contextos en `GetSeed` entre ramas que compiten, asegurando que los hilos mineros locales jamás se interrumpan durante sincronizaciones por lotes de bifurcaciones secundarias.
 3. **Precomputación de Dataset Amigable con la CPU (`NewFastDataset`)**:
    * La inicialización del dataset de 2080 MiB utiliza `max(1, runtime.NumCPU() / 2)` goroutines para que la precomputación en segundo plano durante la ventana `SeedLag` de 64 bloques (~32 minutos) deje libre el 50% de la CPU para la red P2P y el minado activo.
-4. **`VerifyHeaders` Paralelo Fail-Fast en Dos Fases y `MaxExtraDataSize = 64` Bytes**:
-   * **Fase 1 (Fail-Fast en microsegundos)**: Valida las reglas ligeras (`len(header.Extra) <= 64`, `MTP-11 + 15s drift`, dificultad `LWMA-1`, `GasUsed <= GasLimit`) antes de invocar CGo.
+4. **`VerifyHeaders` Paralelo Fail-Fast en Dos Fases, Límite ExtraData y Prohibición de Tíos**:
+   * **Fase 1 (Fail-Fast en microsegundos)**: Valida las reglas ligeras (`len(header.Extra) <= 64`, `header.UncleHash == EmptyUncleHash`, `MTP-11 + 15s drift`, dificultad `LWMA-1`, `GasUsed <= GasLimit` y rechazo de campos opcionales no nulos de bifurcaciones inactivas) antes de invocar CGo.
    * **Fase 2 (Pool Paralelo de Workers)**: Distribuye `VerifySeal` entre `runtime.NumCPU()` goroutines en paralelo, acelerando la sincronización inicial de cabeceras y mitigando ataques DoS de agotamiento de CPU.
 
 ---
@@ -150,15 +155,16 @@ Implementamos una **Defensa de Elección de Bifurcación (Fork-Choice) de Tres C
 ### ADR-006: Anclaje Génesis P2P, Protección Anti-Spam del Mempool y Blindaje RPC en Desktop
 
 1. **Anclaje Criptográfico del Bloque Génesis (`RequireBlockHashes[0]`)**:
-   * El Bloque 0 (timestamp `1762711936` / `0x6910d980`, inscripción `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.256"`) produce el hash canónico:
+   * El Bloque 0 (timestamp `1762711936` / `0x6910d980`, inscripción `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`) produce el hash canónico:
      ```text
      0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d
      ```
-   * Anclado en `RogueChainConfig.RequireBlockHashes[0]` (`params/config_rogue.go`).
+   * Anclado en `RogueChainConfig.RequireBlockHashes[0]` (`params/config_rogue.go`) y sincronizado en `genesis.json`.
 2. **Suelo Anti-Spam del Mempool (`TxPool`)**:
    * `TxPool.PriceLimit` y el `GasPrice` del minero se fijan por defecto en **`1 Gwei` (`10^9 wei`)** con `GasCeil = 60,000,000` (`eth/ethconfig/config.go`, `miner/miner.go`).
 3. **Blindaje RPC y CORS en `rogue-desktop-client`**:
    * En `rogue-desktop-client/src-tauri/src/process_manager.rs`, `--http.corsdomain` y `--ws.origins` se restringen a `tauri://localhost,http://tauri.localhost,http://localhost:1420,http://127.0.0.1:1420` y se elimina el módulo legado `personal`.
-4. **Diagnóstico de Consenso en Tiempo Real vía RPC**:
+4. **Diagnóstico de Consenso en Tiempo Real y Controles Idempotentes**:
    * Se añadieron `randomx_getEpochInfo` y `randomx_getConsensusStatus` (`consensus/randomx/api.go`) exponiendo métricas en vivo de consenso, época, recompensas y finalidad.
+   * Los métodos de control como `randomx_setFastMode` se validaron como idempotentes a través de `RandomX`, `EpochManager` y `API`.
 

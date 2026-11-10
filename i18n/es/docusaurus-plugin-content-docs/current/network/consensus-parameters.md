@@ -25,6 +25,7 @@ Donde:
 
 ### Ventajas de LWMA-1
 * **Independencia del Timestamp Candidato:** La dificultad del bloque `N` se calcula exclusivamente a partir de los bloques cerrados (`N-k .. N-1`). Un minero no puede manipular el `header.Time` de su propio bloque candidato para reducir su dificultad.
+* **Verificación Determinista de Ancestros:** Si falta algún bloque ancestro intermedio en la ventana de observación de LWMA-1, el motor rechaza deterministamente la verificación con `consensus.ErrUnknownAncestor` en lugar de caer en fallbacks con dificultades desactualizadas.
 * **Respuesta ágil:** Se equilibra suavemente ante incrementos o caídas repentinas de mineros.
 * **Inmunidad ante ataques de alquiler y flash-mining:** La potencia alquilada temporalmente no puede hundir artificialmente la dificultad antes de desconectarse.
 
@@ -40,6 +41,8 @@ Para proteger la red frente a ataques time-warp, manipulación de dificultad y c
    * La marca de tiempo de un bloque candidato no puede superar en más de **15 segundos** el reloj local del nodo receptor. Si el desfase es mayor, el bloque es descartado.
 3. **Límite `ExtraData` (`64 bytes`) y Verificación Paralela en Dos Fases:**
    * `header.Extra` está limitado estrictamente a `64 bytes` (`MaxExtraDataSize`). `VerifyHeaders` valida las reglas ligeras en microsegundos antes de distribuir `VerifySeal` entre `runtime.NumCPU()` workers en paralelo.
+4. **Prohibición Estricta de Bloques Tío (`UncleHash == EmptyUncleHash`):**
+   * `header.UncleHash` debe ser exactamente igual a `types.EmptyUncleHash`. Rogue Signal adopta el modelo estricto de árbol simple de Bitcoin (`ErrUnclesNotAllowed`), eliminando vectores de maleabilidad y grinding de tíos.
 
 ---
 
@@ -57,7 +60,7 @@ Para proteger la red frente a ataques time-warp, manipulación de dificultad y c
 ## 💰 Modelo de Emisión y Halving
 
 * **Recompensa Inicial:** 25 ROGUE por bloque
-* **Frecuencia de Halving:** Cada 2,000,000 bloques (~1.90 años / ~694.44 días (~1.90 años) a 30s por bloque)
+* **Frecuencia de Halving:** Cada 2,000,000 bloques (~1.90 años / ~694.44 días a 30s por bloque)
 * **Porción del Minero (95%):** 23.75 ROGUE al inicio (+ 100% de las comisiones de gas del bloque)
-* **Porción de Tesorería (5%):** 1.255 ROGUE al inicio
-* **Límite Total de Emisión:** 100,000,000 ROGUE (100.8M exacto en 32 eras de halving, cero tail emission)
+* **Porción de Tesorería (5%):** 1.25 ROGUE al inicio
+* **Límite Total de Emisión:** 100,000,000 ROGUE (límite matemático exacto en 32 eras de halving: 25 * 2,000,000 * 2 = 100,000,000 ROGUE, cero tail emission)

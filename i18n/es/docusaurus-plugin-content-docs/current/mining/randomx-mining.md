@@ -46,4 +46,4 @@ Para proteger la descentralización de la red e impedir que granjas industriales
 
 * **Puentes Stratum Externos y `eth_getWork` Deshabilitados:** Los métodos RPC `eth_getWork`, `eth_submitWork` y `eth_submitHashrate` están deshabilitados permanentemente en la capa de consenso (`consensus/randomx/api.go`).
 * **1 Nodo = 1 Minero Independiente:** Cada máquina que participe en el Proof-of-Work debe ejecutar un nodo EVM completo y sincronizado (`core-rogue`) con su propia base de datos de estado y su propio dataset RandomX de 2080 MiB en RAM.
-* **Cero Penalizaciones Artificiales de Rendimiento:** Cada bloque PoW válido recibe el 100% de su emisión de **25 ROGUE** (`23.75 ROGUE` para el minero y `1.255 ROGUE` para la tesorería del protocolo) de forma inmediata.
+* **Cero Penalizaciones Artificiales de Rendimiento:** Cada bloque PoW válido recibe el 100% de su emisión de **25 ROGUE** (`23.75 ROGUE` para el minero y `1.25 ROGUE` para la tesorería del protocolo) de forma inmediata.
