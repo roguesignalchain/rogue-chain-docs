@@ -100,7 +100,7 @@ curl -X POST -H "Content-Type: application/json" \
 The RandomX consensus engine exposes dedicated diagnostic and control methods under both the `randomx` and `eth` namespaces. Note that external pool/work RPCs (`eth_getWork`, `eth_submitWork`, `eth_submitHashrate`) are permanently disabled by design to enforce full-node solo mining.
 
 ### `randomx_getConsensusStatus`
-Returns live consensus parameters, current block height, active difficulty, block reward breakdown (`24 ROGUE`: `22.8` miner / `1.2` treasury), halving countdown, and active anti-51% security defenses (`MaxReorgDepth = 90`, `ECBP-1100 MESS`).
+Returns live consensus parameters, current block height, active difficulty, block reward breakdown (`25 ROGUE`: `23.75` miner / `1.25` treasury), halving countdown, and active anti-51% security defenses (`MaxReorgDepth = 90`, `ECBP-1100 MESS`).
 
 #### Request
 ```bash
@@ -125,11 +125,11 @@ curl -X POST -H "Content-Type: application/json" \
     "maxReorgDepth": 90,
     "maxExtraDataSize": 64,
     "messEnabled": true,
-    "halvingInterval": 2100000,
+    "halvingInterval": 2000000,
     "currentEra": 0,
-    "nextHalvingBlock": 2100000,
+    "nextHalvingBlock": 2000000,
     "blocksUntilHalving": 2099880,
-    "baseRewardWei": "24000000000000000000",
+    "baseRewardWei": "25000000000000000000",
     "minerRewardWei": "22800000000000000000",
     "treasuryRewardWei": "1200000000000000000",
     "treasuryAddress": "0xe9aae535b7971a9ac8c6af0e4b524d02260d3a03",

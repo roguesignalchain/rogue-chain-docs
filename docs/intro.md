@@ -19,8 +19,8 @@ description: Introduction to the Rogue Signal (ROGUE) Proof-of-Work blockchain p
 | **Chain ID** | `800055` | EIP-155 replay protection chain ID |
 | **Consensus Algorithm** | `RandomX (rx/0)` | General-purpose CPU-hard Proof-of-Work |
 | **Target Block Time** | `30 seconds` | Low-orphan global confirmation cadence (`< 0.5%` orphan rate) |
-| **Block Reward** | `24 ROGUE` | 95% Miner (22.8 ROGUE) / 5% Protocol Treasury (1.2 ROGUE) |
-| **Halving Schedule** | `2,100,000 blocks` | Halving interval occurs approximately every 2 years (~729.16 days) |
+| **Block Reward** | `25 ROGUE` | 95% Miner (23.75 ROGUE) / 5% Protocol Treasury (1.255 ROGUE) |
+| **Halving Schedule** | `2,000,000 blocks` | Halving interval occurs approximately every 2 years (~694.44 days (~1.90 years)) |
 | **Maximum Supply** | `100,000,000 ROGUE` | Hard cap (100.8M exact across 32 eras), zero tail emission |
 | **Difficulty Algorithm** | `LWMA-1 (N=60)` | Linearly Weighted Moving Average over 60 blocks (~30 min window) |
 | **Timestamp Validation** | `Strict MTP-11` | Block time > Median of last 11 blocks, max 15s future drift |
@@ -44,4 +44,4 @@ Built on a high-throughput Core-Geth foundation, Rogue Signal offers 100% compat
 Sudden hash rate fluctuations (hash jumps or rental attacks) are smoothly absorbed by the **LWMA-1** (`N=60`) difficulty adjustment engine with `+-33%` per-block clamping and candidate timestamp independence. Deep reorganization attacks are neutralized from Block 0 via **ECBP-1100 (MESS)** exponential scoring and a hard **90-block rolling finality depth (`MaxReorgDepth = 90`)**.
 
 ### 4. Sustainable Protocol Treasury
-Every block minted splits rewards between the active block miner (95% / 22.8 ROGUE) and the protocol treasury (5% / 1.2 ROGUE), ensuring perpetual developer funding, network maintenance, security audits, and ecosystem incentives without token pre-mines or ICO allocations.
+Every block minted splits rewards between the active block miner (95% / 23.75 ROGUE) and the protocol treasury (5% / 1.255 ROGUE), ensuring perpetual developer funding, network maintenance, security audits, and ecosystem incentives without token pre-mines or ICO allocations.

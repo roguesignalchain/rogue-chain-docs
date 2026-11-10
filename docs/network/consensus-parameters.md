@@ -56,8 +56,8 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
 
 ## 💰 Emission Schedule & Halving
 
-* **Initial Block Reward:** 24 ROGUE
-* **Halving Cadence:** Every 2,100,000 blocks (~2 years / ~729.16 days at 30s per block)
-* **Miner Share (95%):** 22.8 ROGUE initially (+ 100% of block transaction fees)
-* **Treasury Share (5%):** 1.2 ROGUE initially
+* **Initial Block Reward:** 25 ROGUE
+* **Halving Cadence:** Every 2,000,000 blocks (~1.90 years / ~694.44 days (~1.90 years) at 30s per block)
+* **Miner Share (95%):** 23.75 ROGUE initially (+ 100% of block transaction fees)
+* **Treasury Share (5%):** 1.255 ROGUE initially
 * **Total Supply Cap:** 100,000,000 ROGUE (100.8M exact across 32 halving eras, zero tail emission)

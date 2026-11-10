@@ -56,8 +56,8 @@ Para proteger la red frente a ataques time-warp, manipulación de dificultad y c
 
 ## 💰 Modelo de Emisión y Halving
 
-* **Recompensa Inicial:** 24 ROGUE por bloque
-* **Frecuencia de Halving:** Cada 2,100,000 bloques (~2 años / ~729.16 días a 30s por bloque)
-* **Porción del Minero (95%):** 22.8 ROGUE al inicio (+ 100% de las comisiones de gas del bloque)
-* **Porción de Tesorería (5%):** 1.2 ROGUE al inicio
+* **Recompensa Inicial:** 25 ROGUE por bloque
+* **Frecuencia de Halving:** Cada 2,000,000 bloques (~1.90 años / ~694.44 días (~1.90 años) a 30s por bloque)
+* **Porción del Minero (95%):** 23.75 ROGUE al inicio (+ 100% de las comisiones de gas del bloque)
+* **Porción de Tesorería (5%):** 1.255 ROGUE al inicio
 * **Límite Total de Emisión:** 100,000,000 ROGUE (100.8M exacto en 32 eras de halving, cero tail emission)

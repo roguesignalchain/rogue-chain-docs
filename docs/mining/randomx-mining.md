@@ -24,7 +24,7 @@ To mine directly from the core node daemon into your recipient address:
 ### Solo Mining Parameters
 * `--mine`: Enables the internal RandomX CPU miner thread engine.
 * `--miner.threads <N>`: Sets the number of CPU threads allocated to hashing (100% user-configurable; optimal efficiency is `L3 Cache (MiB) / 2`).
-* `--miner.etherbase <0x...>`: Destination address where all block rewards (**22.8 ROGUE** per block + 100% of block transaction fees) are deposited.
+* `--miner.etherbase <0x...>`: Destination address where all block rewards (**23.75 ROGUE** per block + 100% of block transaction fees) are deposited.
 
 ---
 
@@ -46,4 +46,4 @@ To protect network decentralization and prevent industrial mining farms or cloud
 
 * **External Stratum Bridges & `eth_getWork` Are Disabled:** The `eth_getWork`, `eth_submitWork`, and `eth_submitHashrate` RPC methods are permanently disabled at the consensus layer (`consensus/randomx/api.go`).
 * **1 Node = 1 Independent Miner:** Every machine participating in Proof-of-Work must run a fully synchronized `core-rogue` EVM node with its own chain state and its own 2080 MiB RandomX RAM dataset.
-* **Zero Artificial Yield Penalties:** Every valid PoW block receives 100% of its **24 ROGUE** emission (`22.8 ROGUE` to the miner and `1.2 ROGUE` to the protocol treasury) immediately upon inclusion.
+* **Zero Artificial Yield Penalties:** Every valid PoW block receives 100% of its **25 ROGUE** emission (`23.75 ROGUE` to the miner and `1.255 ROGUE` to the protocol treasury) immediately upon inclusion.

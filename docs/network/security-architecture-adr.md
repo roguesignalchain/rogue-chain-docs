@@ -18,9 +18,9 @@ This document serves as the official engineering and cryptoeconomic Architecture
 | **Chain ID / Network ID** | `800055` (`0xc3537`) | `params/config_rogue.go` | Strict Replay Protection (`EIP-155` active from Block 0) |
 | **PoW Algorithm** | `RandomX (rx/0)` | `consensus/randomx/` | ASIC & GPU resistance via dynamic CPU execution & L3 cache |
 | **Target Block Time (`T`)** | `30 seconds` | `DefaultTargetBlockTime` (`difficulty.go`) | Minimizes global P2P orphan rate (`< 0.5%`) under strict no-uncles rule |
-| **Initial Base Reward** | `24 ROGUE` | `InitialBaseReward` (`rewards.go`) | Scaled `3x` for 30s cadence to preserve the 2-year emission curve |
-| **Reward Split** | `95% Miner / 5% Treasury` | `SplitReward` (`rewards.go`) | `22.8 ROGUE` Miner / `1.2 ROGUE` Protocol Development Treasury |
-| **Halving Interval** | `2,100,000 blocks` (~2 years) | `HalvingInterval` (`rewards.go`) | Reward halves every `2,100,000 * 30s` (~729.16 days) |
+| **Initial Base Reward** | `25 ROGUE` | `InitialBaseReward` (`rewards.go`) | Scaled `3x` for 30s cadence to preserve the 2-year emission curve |
+| **Reward Split** | `95% Miner / 5% Treasury` | `SplitReward` (`rewards.go`) | `23.75 ROGUE` Miner / `1.255 ROGUE` Protocol Development Treasury |
+| **Halving Interval** | `2,000,000 blocks` (~1.90 years) | `HalvingInterval` (`rewards.go`) | Reward halves every `2,000,000 * 30s` (~694.44 days (~1.90 years)) |
 | **Maximum Supply Cap** | `100,000,000 ROGUE` (100.8M exact) | `MaxSupplyCap` (`rewards.go`) | Strict cap across 32 halving eras (`MaxHalvingEras = 32`), zero tail emission |
 | **Difficulty Adjustment (DAA)** | `LWMA-1 (N = 60)` | `CalculateDifficulty` (`difficulty.go`) | 60-block (~30 min) linearly weighted window, `+-33%` per-block clamp |
 | **Minimum / Genesis Difficulty** | `0x10000` (`65,536`) | `MinDifficulty` (`difficulty.go`) | Smooth genesis bootstrap for consumer CPUs (~2.1 KH/s) |
@@ -36,7 +36,7 @@ This document serves as the official engineering and cryptoeconomic Architecture
 | **EVM Fee Model** | `Classical PoW (100% to Miner)` | `config_rogue.go` / `ethconfig` | No EIP-1559 burn; transaction fees incentivize miners across halvings |
 | **Minimum Gas Price (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | P2P mempool spam protection against zero-fee transaction floods |
 | **Genesis Block Hash (Block 0)** | `0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d` | `RogueGenesisHash` (`genesis_rogue.go`) | Hardcoded in `RequireBlockHashes[0]` for cryptographic P2P isolation |
-| **Genesis Cryptic Inscription** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | 60-byte cypherpunk inscription permanently embedded in Block 0 |
+| **Genesis Cryptic Inscription** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.256` | `genesis.json` / `genesis_rogue.go` | 60-byte cypherpunk inscription permanently embedded in Block 0 |
 
 ---
 
@@ -58,11 +58,11 @@ P(delta_t < tau) = 1 - exp(-tau / T)
 1. **Increase `DefaultTargetBlockTime` from `10` to `30` seconds** in `consensus/randomx/difficulty.go`:
    * At `T = 30s`, the sub-1-second collision probability drops from `9.5%` to **`3.2%`**, reducing global orphan rates below **`< 0.5%`**.
 2. **Proportional `3x` Monetary Scaling** in `consensus/randomx/rewards.go`:
-   * **Initial Base Reward (`InitialBaseReward`)**: Scaled from `8 ROGUE` to **`24 ROGUE`** per block (`22.8 ROGUE` to the miner [95%] and `1.2 ROGUE` to the protocol treasury [5%]).
-   * **Halving Interval (`HalvingInterval`)**: Adjusted from `6,300,000` blocks to **`2,100,000` blocks** (~2 years at 30s/block: `2,100,000 * 30s = 63,000,000 seconds` ~ `729.16 days`).
+   * **Initial Base Reward (`InitialBaseReward`)**: Scaled from `8 ROGUE` to **`25 ROGUE`** per block (`23.75 ROGUE` to the miner [95%] and `1.255 ROGUE` to the protocol treasury [5%]).
+   * **Halving Interval (`HalvingInterval`)**: Adjusted from `6,300,000` blocks to **`2,000,000` blocks** (~1.90 years at 30s/block: `2,000,000 * 30s = 63,000,000 seconds` ~ `729.16 days`).
    * **Supply Cap Invariance**:
      ```text
-     Total Supply = sum_{k=0..31} (24 / 2^k) * 2,100,000 = 100,800,000 ROGUE (100M Hard Cap)
+     Total Supply = sum_{k=0..31} (24 / 2^k) * 2,000,000 = 100,000,000 ROGUE (100M Hard Cap)
      ```
      The 2-year halving schedule and ~100M ROGUE maximum supply cap remain 100% invariant.
 
@@ -150,7 +150,7 @@ We implemented a **Three-Layer Fork-Choice Defense Active from Block 0** across 
 ### ADR-006: P2P Genesis Anchoring, Mempool Spam Protection & Desktop RPC Hardening
 
 1. **Cryptographic Genesis Anchoring (`RequireBlockHashes[0]`)**:
-   * Block 0 (timestamp `1762711936` / `0x6910d980`, inscription `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`) produces the canonical hash:
+   * Block 0 (timestamp `1762711936` / `0x6910d980`, inscription `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.256"`) produces the canonical hash:
      ```text
      0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d
      ```
