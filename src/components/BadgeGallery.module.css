@@ -1,0 +1,25 @@
+.galleryContainer {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem;
+  background-color: #050507;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+}
+
+.galleryGrid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+}
+
+@media (max-width: 996px) {
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .galleryGrid {
+    grid-template-columns: 1fr !important;
+  }
+}

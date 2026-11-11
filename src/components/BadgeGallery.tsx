@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './BadgeGallery.module.css';
 
 interface BadgeItem {
   level: number;
@@ -21,8 +22,8 @@ const BADGES: BadgeItem[] = [
 
 export default function BadgeGallery() {
   return (
-    <div className="badge-gallery-container">
-      <div className="badge-gallery-grid">
+    <div className={`badge-gallery-container ${styles.galleryContainer}`}>
+      <div className={`badge-gallery-grid ${styles.galleryGrid}`}>
         {BADGES.map((badge) => (
           <div key={badge.id} className="badge-card">
             <div className="badge-card-badge-wrapper">
