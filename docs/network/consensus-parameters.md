@@ -52,6 +52,7 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
    * Reorganizations deeper than `90 blocks` (~45 minutes) are unconditionally rejected in `ForkChoice.ReorgNeeded`.
 2. **ECBP-1100 (MESS) from Block 0:**
    * Late secret forks of depth `1..90` face a cubic polynomial gravity penalty requiring up to **`31x` the local subchain difficulty**.
+   * Calibrated with a **15-minute safety interval** (`artificialFinalitySafetyInterval = 900s`, representing 30 blocks $\times$ 30s) to prevent false stale-chain detections during normal PoW block variance.
 3. **Anti-Selfish Mining Tie-Breaking:**
    * Equal-difficulty ties preserve locally mined blocks or break external ties via cryptographic 50/50 randomization (`crypto/rand`).
 

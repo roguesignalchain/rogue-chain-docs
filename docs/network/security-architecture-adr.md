@@ -113,9 +113,10 @@ We implemented a **Three-Layer Fork-Choice Defense Active from Block 0** across 
      ```
    * If `reorgDepth > 90` blocks (~45 minutes at 30s/block), the reorganization is **unconditionally rejected**, regardless of the proposed chain's total difficulty.
    * Normal forward synchronization from genesis or behind peers has `commonHeader == current` (`reorgDepth == 0`) and is completely unaffected.
-2. **Layer 2 — Modified Exponential Subjective Scoring (`ECBP-1100 MESS` in `core/blockchain_af.go`)**:
+2. **Layer 2 — Modified Exponential Subjective Scoring (`ECBP-1100 MESS` in `core/blockchain_af.go` & `eth/sync.go`)**:
    * Activated from Block 0 (`ECBP1100FBlock = 0` in `RogueChainConfig` and enabled by default in `NewBlockChain`).
    * For forks of depth `1..90`, MESS applies a cubic polynomial gravity multiplier based on the age of the common ancestor (`delta_t = current.Time - commonAncestor.Time`), requiring a secret chain to accumulate up to **`31x` the local subchain difficulty** to be accepted.
+   * Calibrated with `artificialFinalitySafetyInterval = 30 * 30 * time.Second` (**15 minutes** / 30 Rogue blocks), preventing false stale-chain detections during normal PoW block variance.
 3. **Layer 3 — Anti-Selfish Mining Tie-Breaking (Eyal-Sirer Rule in `core/forkchoice.go`)**:
    * When `externTd == localTD`, the node preserves its own locally mined block (`currentPreserve`) or breaks ties between external blocks using a cryptographically seeded 50/50 random choice (`crypto/rand`).
 

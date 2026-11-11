@@ -18,13 +18,15 @@ To mine directly from the core node daemon into your recipient address:
   --rogue \
   --mine \
   --miner.threads 8 \
-  --miner.etherbase 0xYourRogueAddressHere
+  --miner.etherbase 0xYourRogueAddressHere \
+  --miner.extradata "miner-tag"
 ```
 
 ### Solo Mining Parameters
 * `--mine`: Enables the internal RandomX CPU miner thread engine.
 * `--miner.threads <N>`: Sets the number of CPU threads allocated to hashing (100% user-configurable; optimal efficiency is `L3 Cache (MiB) / 2`).
 * `--miner.etherbase <0x...>`: Destination address where all block rewards (**23.75 ROGUE** per block + 100% of block transaction fees) are deposited.
+* `--miner.extradata "<tag>"`: Optional miner identifier (up to 64 bytes) to ensure distinct `sealhash` targets when running multiple miners.
 
 ---
 

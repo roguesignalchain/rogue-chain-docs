@@ -117,6 +117,16 @@ const config: Config = {
           position: 'right',
         },
         {
+          href: 'https://discord.gg/c6bwF6Wk6c',
+          label: 'Discord',
+          position: 'right',
+        },
+        {
+          href: 'https://x.com/roguesignal_',
+          label: 'X (Twitter)',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/roguesignalchain',
           label: 'GitHub',
           position: 'right',
@@ -176,12 +186,16 @@ const config: Config = {
           title: 'Community',
           items: [
             {
+              label: 'Discord',
+              href: 'https://discord.gg/c6bwF6Wk6c',
+            },
+            {
               label: 'Telegram Community',
               href: 'https://t.me/roguesignalchain',
             },
             {
               label: 'X (Twitter)',
-              href: 'https://x.com/roguesignal',
+              href: 'https://x.com/roguesignal_',
             },
             {
               label: 'GitHub Organization',
