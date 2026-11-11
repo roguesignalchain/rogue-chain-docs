@@ -75,10 +75,13 @@ To encourage sustainable, decentralized home solo-mining without altering the ne
 * **Active Window:** Active from Block 1 onwards, keeping Genesis Block 0 state root unmodified.
 * **Deterministic Reorg Safety:** Reorganizations up to 90 blocks automatically unwind miner block counts with the reverted chain blocks.
 * **Progression Tiers:**
-  * **Level 0 (Unranked Runner):** 0 blocks
-  * **Level 1 (Recon Runner):** 1 – 24 blocks
-  * **Level 2 (Signal Scraper):** 25 – 99 blocks
-  * **Level 3 (Hash Warden):** 100 – 499 blocks
-  * **Level 4 (Cipher Architect):** 500 – 2,499 blocks
-  * **Level 5 (Apex Operator):** 2,500 – 9,999 blocks
-  * **Level 6 (Rogue Singularity):** 10,000+ blocks
+
+| Badge | Level | Title | Blocks Mined | Target XP |
+|:---:|---|---|---|---|
+| <img src="/img/badges/lvl0.png" width="32" height="32" alt="Lv0" /> | **Level 0** | *Unranked Runner* | 0 | 1 |
+| <img src="/img/badges/lvl1.png" width="32" height="32" alt="Lv1" /> | **Level 1** | *Recon Runner* | 1 – 24 | 25 |
+| <img src="/img/badges/lvl2.png" width="32" height="32" alt="Lv2" /> | **Level 2** | *Signal Scraper* | 25 – 99 | 100 |
+| <img src="/img/badges/lvl3.png" width="32" height="32" alt="Lv3" /> | **Level 3** | *Hash Warden* | 100 – 499 | 500 |
+| <img src="/img/badges/lvl4.png" width="32" height="32" alt="Lv4" /> | **Level 4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
+| <img src="/img/badges/lvl5.png" width="32" height="32" alt="Lv5" /> | **Level 5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
+| <img src="/img/badges/lvl6.png" width="32" height="32" alt="Lv6" /> | **Level 6** | *Rogue Singularity* | 10,000+ | 10,000 (Max) |
