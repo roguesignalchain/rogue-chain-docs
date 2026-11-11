@@ -183,15 +183,15 @@ curl -X POST -H "Content-Type: application/json" \
 
 ## 🎮 Métodos del Namespace `rogue` (Gamificación y Rangos)
 
-El namespace `rogue` expone el sistema de niveles y estadísticas de bloques minados guardado nativamente en el árbol de estado del protocolo.
+El namespace `rogue` expone el sistema de niveles de minería, títulos y cálculos de XP en cadena respaldados directamente por el `StateDB` bajo la dirección de contrato del sistema `0x0000000000000000000000000000000000000020`.
 
 ### `rogue_getMinerLevel`
-Devuelve el rango numérico (`uint32`) alcanzado por la dirección minera consultada (entre 0 y 6).
+Devuelve el rango numérico (de `0` a `6`) para cualquier dirección consultada.
 
 #### Petición
 ```bash
 curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2506e788e0018a4a5ebc3df5b44cb01e4a64d3fb"],"id":1}' \
+  --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
   http://127.0.0.1:8545
 ```
 
@@ -207,12 +207,12 @@ curl -X POST -H "Content-Type: application/json" \
 ---
 
 ### `rogue_getMinerStats`
-Devuelve los metadatos completos de gamificación para la dirección dada, incluyendo nivel actual, título cyberpunk, bloques minados, XP del nivel siguiente y porcentaje de progreso.
+Devuelve el registro completo de gamificación en cadena, título, XP y progreso de nivel para la dirección consultada.
 
 #### Petición
 ```bash
 curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2506e788e0018a4a5ebc3df5b44cb01e4a64d3fb"],"id":1}' \
+  --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
   http://127.0.0.1:8545
 ```
 
@@ -222,11 +222,11 @@ curl -X POST -H "Content-Type: application/json" \
   "jsonrpc": "2.0",
   "id": 1,
   "result": {
-    "address": "0x2506e788e0018a4a5ebc3df5b44cb01e4a64d3fb",
-    "blocksMined": 13,
+    "address": "0x2fb9d05d39a1ee37fce2f00964d3b00c0a8677c7",
+    "blocksMined": 14,
     "level": 1,
     "title": "Recon Runner",
-    "currentLevelXP": 1,
+    "currentXP": 14,
     "nextLevelXP": 25,
     "progressPercent": 54.17
   }

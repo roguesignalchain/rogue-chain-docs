@@ -68,3 +68,13 @@ La salud del sistema se comunica a través de luminancia y pulsos de luz en luga
 | **Activo / Minando** | Punto blanco pulsante (`animate-pulse`) | `[MINING]` en texto blanco / `border-white/30` | Sistema operando a plena capacidad |
 | **En Espera / Idle** | Punto zinc-600 fijo | `[STANDBY]` en zinc-400 / `border-white/10` | Daemon en espera o a la escucha |
 | **Sincronizando** | Punto zinc-300 con pulso rápido | `[SYNCING 99%]` en zinc-200 | Sincronizando estado de la cadena |
+
+---
+
+## 📈 Gráficos de Rendimiento y Hashrate
+
+* **Líneas de Cuadrícula:** `1px` discontinuo `rgba(255, 255, 255, 0.06)`.
+* **Trazo:** `1.5px` blanco sólido `#FFFFFF`.
+* **Área de Relleno:** Gradiente vertical desvaneciéndose desde `rgba(255, 255, 255, 0.12)` hasta `transparent`.
+* **Tooltip:** Caja invertida (`bg-white text-black font-mono font-bold text-xs px-2 py-1`).
+

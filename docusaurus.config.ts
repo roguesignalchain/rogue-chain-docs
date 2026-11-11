@@ -25,7 +25,7 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'es'],
+    locales: ['en', 'es', 'zh-Hans'],
     localeConfigs: {
       en: {
         label: 'English',
@@ -36,6 +36,11 @@ const config: Config = {
         label: 'Español',
         direction: 'ltr',
         htmlLang: 'es-ES',
+      },
+      'zh-Hans': {
+        label: '简体中文',
+        direction: 'ltr',
+        htmlLang: 'zh-Hans',
       },
     },
   },
@@ -72,7 +77,7 @@ const config: Config = {
       /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
       {
         hashed: true,
-        language: ['en', 'es'],
+        language: ['en', 'es', 'zh'],
         indexDocs: true,
         indexBlog: true,
         indexPages: true,

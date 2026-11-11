@@ -54,3 +54,18 @@ font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospac
 
 * **Pesos:** `400` (Regular), `500` (Medium), `700` (Bold).
 * **Alineación:** Números tabulares para alineación perfecta en columnas de datos y balances.
+
+---
+
+## Matriz de Jerarquía de Escala
+
+| Token | Tamaño | Altura de Línea | Aplicación |
+| :--- | :--- | :--- | :--- |
+| `text-display` | `4.5rem` / `72px` | `1.05` | Titular Principal de Landing Page |
+| `text-h1` | `2.25rem` / `36px` | `1.15` | H1 de Páginas y Documentación |
+| `text-h2` | `1.75rem` / `28px` | `1.20` | Encabezados de Sección y Títulos de Modales |
+| `text-h3` | `1.25rem` / `20px` | `1.30` | Encabezados de Tarjetas y Títulos de Funcionalidades |
+| `text-body` | `1.00rem` / `16px` | `1.50` | Texto Principal de Documentación |
+| `text-mono` | `0.875rem` / `14px`| `1.45` | Valores de Hash y Parámetros CLI |
+| `text-hud` | `0.750rem` / `12px`| `1.40` | Badges en Corchetes en Mayúsculas `[SYNCED]` |
+

@@ -38,7 +38,7 @@ Once built or downloaded from the official release page, launch the node using t
 | `--http` | Enables the HTTP-RPC server | `false` |
 | `--http.addr <ip>` | HTTP-RPC listening interface | `127.0.0.1` |
 | `--http.port <port>` | HTTP-RPC listening port | `8545` |
-| `--http.api <apis>` | Comma-separated list of enabled APIs (`eth,net,web3,miner,randomx`) | `eth,net,web3` |
+| `--http.api <apis>` | Comma-separated list of enabled APIs (`eth,net,web3,miner,randomx,rogue`) | `eth,net,web3` |
 | `--ws` | Enables WebSocket RPC server | `false` |
 | `--ws.port <port>` | WebSocket listening port | `8546` |
 | `--port <port>` | Network P2P listening port | `30303` |

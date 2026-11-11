@@ -38,7 +38,7 @@ Una vez compilado o descargado desde las releases oficiales, puedes iniciar el n
 | `--http` | Habilita el servidor HTTP-RPC | `false` |
 | `--http.addr <ip>` | Interfaz de escucha para HTTP-RPC | `127.0.0.1` |
 | `--http.port <puerto>`| Puerto de escucha HTTP-RPC | `8545` |
-| `--http.api <apis>` | APIs expuestas separadas por comas (`eth,net,web3,miner,randomx`) | `eth,net,web3` |
+| `--http.api <apis>` | APIs expuestas separadas por comas (`eth,net,web3,miner,randomx,rogue`) | `eth,net,web3` |
 | `--ws` | Habilita el servidor WebSocket RPC | `false` |
 | `--ws.port <puerto>` | Puerto de escucha para WebSocket | `8546` |
 | `--port <puerto>` | Puerto de escucha P2P de la red | `30303` |
