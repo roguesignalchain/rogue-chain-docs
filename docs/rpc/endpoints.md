@@ -178,3 +178,70 @@ curl -X POST -H "Content-Type: application/json" \
 * `randomx_getHashrate`: Returns the node's internal RandomX CPU mining rate in hashes per second (`uint64`).
 * `randomx_setFastMode(bool)`: Toggles between **Light Mode** (~256 MiB cache) and **Fast Mode** (~2080 MiB RAM dataset) for the next initialized RandomX context.
 * `randomx_getFastMode()`: Returns `true` if Fast Mode is enabled.
+
+---
+
+## 🎮 Protocol Gamification Endpoints (`rogue_`)
+
+The `rogue` namespace exposes on-chain miner status, levels, titles, and XP calculations backed directly by the `StateDB` under system address `0x0000000000000000000000000000000000000020`.
+
+### `rogue_getMinerLevel`
+Returns the numeric rank level (from `0` to `6`) for any queried address.
+
+#### Request
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
+  http://127.0.0.1:8545
+```
+
+#### Response
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": 1
+}
+```
+
+---
+
+### `rogue_getMinerStats`
+Returns the complete on-chain gamification record, title, XP, and level progress.
+
+#### Request
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
+  http://127.0.0.1:8545
+```
+
+#### Response
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "address": "0x2fb9d05d39a1ee37fce2f00964d3b00c0a8677c7",
+    "blocksMined": 14,
+    "level": 1,
+    "title": "Recon Runner",
+    "currentXP": 14,
+    "nextLevelXP": 25,
+    "progressPercent": 54.17
+  }
+}
+```
+
+#### Progression Tiers Table
+
+| Level | Title | Blocks Mined | Target XP |
+|---|---|---|---|
+| **0** | *Unranked Runner* | 0 | 1 |
+| **1** | *Recon Runner* | 1 – 24 | 25 |
+| **2** | *Signal Scraper* | 25 – 99 | 100 |
+| **3** | *Hash Warden* | 100 – 499 | 500 |
+| **4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
+| **5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
+| **6** | *Rogue Singularity* | 10,000+ | 10,000 (Max) |
+

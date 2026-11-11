@@ -64,3 +64,21 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
 * **Miner Share (95%):** 23.75 ROGUE initially (+ 100% of block transaction fees)
 * **Treasury Share (5%):** 1.25 ROGUE initially
 * **Total Supply Cap:** 100,000,000 ROGUE (exact mathematical limit across 32 halving eras: 25 * 2,000,000 * 2 = 100,000,000 ROGUE, zero tail emission)
+
+---
+
+## 🏆 Protocol Gamification & Miner Experience Tiers
+
+To encourage sustainable, decentralized home solo-mining without altering the network monetary cap or consensus difficulty, Rogue Signal tracks miner block counts natively inside the canonical state trie:
+
+* **State Persistence:** Incremented upon block finalization in `core/state_processor.go` under system contract address `0x0000000000000000000000000000000000000020` (`keccak256(miner.Bytes())`).
+* **Active Window:** Active from Block 1 onwards, keeping Genesis Block 0 state root unmodified.
+* **Deterministic Reorg Safety:** Reorganizations up to 90 blocks automatically unwind miner block counts with the reverted chain blocks.
+* **Progression Tiers:**
+  * **Level 0 (Unranked Runner):** 0 blocks
+  * **Level 1 (Recon Runner):** 1 – 24 blocks
+  * **Level 2 (Signal Scraper):** 25 – 99 blocks
+  * **Level 3 (Hash Warden):** 100 – 499 blocks
+  * **Level 4 (Cipher Architect):** 500 – 2,499 blocks
+  * **Level 5 (Apex Operator):** 2,500 – 9,999 blocks
+  * **Level 6 (Rogue Singularity):** 10,000+ blocks
