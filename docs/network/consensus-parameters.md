@@ -67,6 +67,8 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
 
 ---
 
+import BadgeGallery from '@site/src/components/BadgeGallery';
+
 ## 🏆 Protocol Gamification & Miner Experience Tiers
 
 To encourage sustainable, decentralized home solo-mining without altering the network monetary cap or consensus difficulty, Rogue Signal tracks miner block counts natively inside the canonical state trie:
@@ -74,14 +76,24 @@ To encourage sustainable, decentralized home solo-mining without altering the ne
 * **State Persistence:** Incremented upon block finalization in `core/state_processor.go` under system contract address `0x0000000000000000000000000000000000000020` (`keccak256(miner.Bytes())`).
 * **Active Window:** Active from Block 1 onwards, keeping Genesis Block 0 state root unmodified.
 * **Deterministic Reorg Safety:** Reorganizations up to 90 blocks automatically unwind miner block counts with the reverted chain blocks.
-* **Progression Tiers:**
 
-| Badge | Level | Title | Blocks Mined | Target XP |
+### Miner Level Showcase
+
+<BadgeGallery />
+
+### Progression Specifications
+
+| Medal | Level | Title | Blocks Mined | Target XP |
 |:---:|---|---|---|---|
-| <img src="/img/badges/lvl0.png" width="32" height="32" alt="Lv0" /> | **Level 0** | *Unranked Runner* | 0 | 1 |
-| <img src="/img/badges/lvl1.png" width="32" height="32" alt="Lv1" /> | **Level 1** | *Recon Runner* | 1 – 24 | 25 |
-| <img src="/img/badges/lvl2.png" width="32" height="32" alt="Lv2" /> | **Level 2** | *Signal Scraper* | 25 – 99 | 100 |
-| <img src="/img/badges/lvl3.png" width="32" height="32" alt="Lv3" /> | **Level 3** | *Hash Warden* | 100 – 499 | 500 |
-| <img src="/img/badges/lvl4.png" width="32" height="32" alt="Lv4" /> | **Level 4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
-| <img src="/img/badges/lvl5.png" width="32" height="32" alt="Lv5" /> | **Level 5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
-| <img src="/img/badges/lvl6.png" width="32" height="32" alt="Lv6" /> | **Level 6** | *Rogue Singularity* | 10,000+ | 10,000 (Max) |
+| <img src="/img/badges/lvl0.png" width="64" height="64" className="badge-img zoomable" alt="Level 0 - Unranked Runner" title="Click to view large" /> | **Level 0** | *Unranked Runner* | 0 | 1 |
+| <img src="/img/badges/lvl1.png" width="64" height="64" className="badge-img zoomable" alt="Level 1 - Recon Runner" title="Click to view large" /> | **Level 1** | *Recon Runner* | 1 – 24 | 25 |
+| <img src="/img/badges/lvl2.png" width="64" height="64" className="badge-img zoomable" alt="Level 2 - Signal Scraper" title="Click to view large" /> | **Level 2** | *Signal Scraper* | 25 – 99 | 100 |
+| <img src="/img/badges/lvl3.png" width="64" height="64" className="badge-img zoomable" alt="Level 3 - Hash Warden" title="Click to view large" /> | **Level 3** | *Hash Warden* | 100 – 499 | 500 |
+| <img src="/img/badges/lvl4.png" width="64" height="64" className="badge-img zoomable" alt="Level 4 - Cipher Architect" title="Click to view large" /> | **Level 4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
+| <img src="/img/badges/lvl5.png" width="64" height="64" className="badge-img zoomable" alt="Level 5 - Apex Operator" title="Click to view large" /> | **Level 5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
+| <img src="/img/badges/lvl6.png" width="64" height="64" className="badge-img zoomable" alt="Level 6 - Rogue Singularity" title="Click to view large" /> | **Level 6** | *Rogue Singularity* | 10,000+ | 10,000 (Max) |
+
+:::tip INTERACTIVE MEDAL ZOOM
+Click on any medal in the gallery or the table to inspect its full-resolution cyberpunk artwork, tier requirements, and lore metadata.
+:::
+

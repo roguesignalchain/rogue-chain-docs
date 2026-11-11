@@ -235,13 +235,17 @@ curl -X POST -H "Content-Type: application/json" \
 
 #### Progression Tiers Table
 
-| Badge | Level | Title | Blocks Mined | Target XP |
+| Medal | Level | Title | Blocks Mined | Target XP |
 |:---:|---|---|---|---|
-| <img src="/img/badges/lvl0.png" width="28" height="28" alt="Lv0" /> | **0** | *Unranked Runner* | 0 | 1 |
-| <img src="/img/badges/lvl1.png" width="28" height="28" alt="Lv1" /> | **1** | *Recon Runner* | 1 – 24 | 25 |
-| <img src="/img/badges/lvl2.png" width="28" height="28" alt="Lv2" /> | **2** | *Signal Scraper* | 25 – 99 | 100 |
-| <img src="/img/badges/lvl3.png" width="28" height="28" alt="Lv3" /> | **3** | *Hash Warden* | 100 – 499 | 500 |
-| <img src="/img/badges/lvl4.png" width="28" height="28" alt="Lv4" /> | **4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
-| <img src="/img/badges/lvl5.png" width="28" height="28" alt="Lv5" /> | **5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
-| <img src="/img/badges/lvl6.png" width="28" height="28" alt="Lv6" /> | **6** | *Rogue Singularity* | 10,000+ | 10,000 (Max) |
+| <img src="/img/badges/lvl0.png" width="56" height="56" className="badge-img zoomable" alt="Level 0 - Unranked Runner" title="Click to view large" /> | **0** | *Unranked Runner* | 0 | 1 |
+| <img src="/img/badges/lvl1.png" width="56" height="56" className="badge-img zoomable" alt="Level 1 - Recon Runner" title="Click to view large" /> | **1** | *Recon Runner* | 1 – 24 | 25 |
+| <img src="/img/badges/lvl2.png" width="56" height="56" className="badge-img zoomable" alt="Level 2 - Signal Scraper" title="Click to view large" /> | **2** | *Signal Scraper* | 25 – 99 | 100 |
+| <img src="/img/badges/lvl3.png" width="56" height="56" className="badge-img zoomable" alt="Level 3 - Hash Warden" title="Click to view large" /> | **3** | *Hash Warden* | 100 – 499 | 500 |
+| <img src="/img/badges/lvl4.png" width="56" height="56" className="badge-img zoomable" alt="Level 4 - Cipher Architect" title="Click to view large" /> | **4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
+| <img src="/img/badges/lvl5.png" width="56" height="56" className="badge-img zoomable" alt="Level 5 - Apex Operator" title="Click to view large" /> | **5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
+| <img src="/img/badges/lvl6.png" width="56" height="56" className="badge-img zoomable" alt="Level 6 - Rogue Singularity" title="Click to view large" /> | **6** | *Rogue Singularity* | 10,000+ | 10,000 (Max) |
+
+:::tip
+Click on any medal thumbnail to view it in full high resolution.
+:::
 

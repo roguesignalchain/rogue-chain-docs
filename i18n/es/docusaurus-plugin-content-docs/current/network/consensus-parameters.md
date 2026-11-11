@@ -64,3 +64,35 @@ Para proteger la red frente a ataques time-warp, manipulación de dificultad y c
 * **Porción del Minero (95%):** 23.75 ROGUE al inicio (+ 100% de las comisiones de gas del bloque)
 * **Porción de Tesorería (5%):** 1.25 ROGUE al inicio
 * **Límite Total de Emisión:** 100,000,000 ROGUE (límite matemático exacto en 32 eras de halving: 25 * 2,000,000 * 2 = 100,000,000 ROGUE, cero tail emission)
+
+---
+
+import BadgeGallery from '@site/src/components/BadgeGallery';
+
+## 🏆 Gamificación a Nivel de Protocolo y Niveles de Mineros
+
+Para incentivar la minería en solitario sostenible y descentralizada sin alterar el límite monetario de la red ni la dificultad de consenso, Rogue Signal rastrea el conteo de bloques minados nativamente dentro del árbol de estado (*canonical state trie*):
+
+* **Persistencia de Estado:** Incrementado tras la finalización de cada bloque en el procesador de estado bajo la dirección del contrato del sistema `0x0000000000000000000000000000000000000020` en el slot `keccak256(miner.Bytes())`.
+* **Ventana Activa:** Activo a partir del Bloque 1 en adelante, preservando la raíz de estado del Bloque Génesis 0 intacta.
+* **Seguridad ante Reorganizaciones Deterministas:** Reorganizaciones de hasta 90 bloques revierten automáticamente los conteos de bloques de los mineros junto con los bloques de la cadena descartada.
+
+### Galería de Rangos y Medallas
+
+<BadgeGallery />
+
+### Especificaciones de Progresión
+
+| Medalla | Nivel | Título | Bloques Minados | XP Objetivo |
+|:---:|---|---|---|---|
+| <img src="/img/badges/lvl0.png" width="64" height="64" className="badge-img zoomable" alt="Nivel 0 - Unranked Runner" title="Haz clic para ver en grande" /> | **Nivel 0** | *Unranked Runner* | 0 | 1 |
+| <img src="/img/badges/lvl1.png" width="64" height="64" className="badge-img zoomable" alt="Nivel 1 - Recon Runner" title="Haz clic para ver en grande" /> | **Nivel 1** | *Recon Runner* | 1 – 24 | 25 |
+| <img src="/img/badges/lvl2.png" width="64" height="64" className="badge-img zoomable" alt="Nivel 2 - Signal Scraper" title="Haz clic para ver en grande" /> | **Nivel 2** | *Signal Scraper* | 25 – 99 | 100 |
+| <img src="/img/badges/lvl3.png" width="64" height="64" className="badge-img zoomable" alt="Nivel 3 - Hash Warden" title="Haz clic para ver en grande" /> | **Nivel 3** | *Hash Warden* | 100 – 499 | 500 |
+| <img src="/img/badges/lvl4.png" width="64" height="64" className="badge-img zoomable" alt="Nivel 4 - Cipher Architect" title="Haz clic para ver en grande" /> | **Nivel 4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
+| <img src="/img/badges/lvl5.png" width="64" height="64" className="badge-img zoomable" alt="Nivel 5 - Apex Operator" title="Haz clic para ver en grande" /> | **Nivel 5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
+| <img src="/img/badges/lvl6.png" width="64" height="64" className="badge-img zoomable" alt="Nivel 6 - Rogue Singularity" title="Haz clic para ver en grande" /> | **Nivel 6** | *Rogue Singularity* | 10,000+ | 10,000 (Máx) |
+
+:::tip ZOOM INTERACTIVO DE MEDALLAS
+Haz clic en cualquier medalla de la galería o de la tabla para inspeccionarla en ultra-alta resolución, ver los requisitos del rango y su descripción cyberpunk.
+:::

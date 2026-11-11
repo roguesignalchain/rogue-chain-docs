@@ -213,3 +213,113 @@ code {
   font-size: 0.75rem;
   letter-spacing: 0.05em;
 }
+
+/* Gamification Badges & Interactive Zoom */
+.badge-img,
+img.zoomable,
+img[src*="/badges/"] {
+  cursor: zoom-in;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+  border-radius: 4px;
+}
+
+.badge-img:hover,
+img.zoomable:hover,
+img[src*="/badges/"]:hover {
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.45));
+}
+
+/* Badges Showcase Gallery Grid */
+.badge-gallery-container {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem;
+  background-color: #050507;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+}
+
+.badge-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+}
+
+.badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0.6rem;
+  background-color: #0a0a0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.badge-card:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  background-color: #111116;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.badge-card-badge-wrapper {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.badge-card-badge-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.badge-card-level {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.badge-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+  margin-bottom: 0.35rem;
+}
+
+.badge-card-blocks {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: #71717a;
+}
+
+.badge-gallery-hint {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #a1a1aa;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@keyframes rogueFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

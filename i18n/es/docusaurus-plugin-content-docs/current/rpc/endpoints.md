@@ -178,3 +178,74 @@ curl -X POST -H "Content-Type: application/json" \
 * `randomx_getHashrate`: Devuelve la tasa de hash interna del minero RandomX del nodo en hashes por segundo (`uint64`).
 * `randomx_setFastMode(bool)`: Alterna entre **Light Mode** (~256 MiB en caché) y **Fast Mode** (~2080 MiB de dataset en RAM) para el siguiente contexto RandomX inicializado.
 * `randomx_getFastMode()`: Devuelve `true` si el modo rápido está habilitado.
+
+---
+
+## 🎮 Métodos del Namespace `rogue` (Gamificación y Rangos)
+
+El namespace `rogue` expone el sistema de niveles y estadísticas de bloques minados guardado nativamente en el árbol de estado del protocolo.
+
+### `rogue_getMinerLevel`
+Devuelve el rango numérico (`uint32`) alcanzado por la dirección minera consultada (entre 0 y 6).
+
+#### Petición
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2506e788e0018a4a5ebc3df5b44cb01e4a64d3fb"],"id":1}' \
+  http://127.0.0.1:8545
+```
+
+#### Respuesta
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": 1
+}
+```
+
+---
+
+### `rogue_getMinerStats`
+Devuelve los metadatos completos de gamificación para la dirección dada, incluyendo nivel actual, título cyberpunk, bloques minados, XP del nivel siguiente y porcentaje de progreso.
+
+#### Petición
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2506e788e0018a4a5ebc3df5b44cb01e4a64d3fb"],"id":1}' \
+  http://127.0.0.1:8545
+```
+
+#### Respuesta
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "address": "0x2506e788e0018a4a5ebc3df5b44cb01e4a64d3fb",
+    "blocksMined": 13,
+    "level": 1,
+    "title": "Recon Runner",
+    "currentLevelXP": 1,
+    "nextLevelXP": 25,
+    "progressPercent": 54.17
+  }
+}
+```
+
+#### Tabla de Rangos y Medallas de Progresión
+
+| Medalla | Nivel | Título | Bloques Minados | XP Objetivo |
+|:---:|---|---|---|---|
+| <img src="/img/badges/lvl0.png" width="56" height="56" className="badge-img zoomable" alt="Nivel 0 - Unranked Runner" title="Haz clic para ver en grande" /> | **0** | *Unranked Runner* | 0 | 1 |
+| <img src="/img/badges/lvl1.png" width="56" height="56" className="badge-img zoomable" alt="Nivel 1 - Recon Runner" title="Haz clic para ver en grande" /> | **1** | *Recon Runner* | 1 – 24 | 25 |
+| <img src="/img/badges/lvl2.png" width="56" height="56" className="badge-img zoomable" alt="Nivel 2 - Signal Scraper" title="Haz clic para ver en grande" /> | **2** | *Signal Scraper* | 25 – 99 | 100 |
+| <img src="/img/badges/lvl3.png" width="56" height="56" className="badge-img zoomable" alt="Nivel 3 - Hash Warden" title="Haz clic para ver en grande" /> | **3** | *Hash Warden* | 100 – 499 | 500 |
+| <img src="/img/badges/lvl4.png" width="56" height="56" className="badge-img zoomable" alt="Nivel 4 - Cipher Architect" title="Haz clic para ver en grande" /> | **4** | *Cipher Architect* | 500 – 2,499 | 2,500 |
+| <img src="/img/badges/lvl5.png" width="56" height="56" className="badge-img zoomable" alt="Nivel 5 - Apex Operator" title="Haz clic para ver en grande" /> | **5** | *Apex Operator* | 2,500 – 9,999 | 10,000 |
+| <img src="/img/badges/lvl6.png" width="56" height="56" className="badge-img zoomable" alt="Nivel 6 - Rogue Singularity" title="Haz clic para ver en grande" /> | **6** | *Rogue Singularity* | 10,000+ | 10,000 (Máx) |
+
+:::tip
+Haz clic en cualquier miniatura de medalla para verla en resolución completa ultra nítida.
+:::
+
