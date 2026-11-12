@@ -38,7 +38,7 @@ Para proteger la red frente a ataques time-warp, manipulación de dificultad y c
 1. **MTP-11 (Past Median Time):**
    * El tiempo del bloque `H` debe ser estrictamente mayor que la mediana de los 11 bloques anteriores (`H-11` a `H-1`). Al ensamblar un bloque local (`Prepare`), si marcas de tiempo desordenadas hacen que `parent.Time + 1 <= MTP-11`, el nodo adelanta automáticamente `header.Time = MTP-11 + 1`.
 2. **Límite de Deriva Futura:**
-   * La marca de tiempo de un bloque candidato no puede superar en más de **15 segundos** el reloj local del nodo receptor. Si el desfase es mayor, el bloque es descartado.
+   * La marca de tiempo de un bloque candidato no puede superar en más de **30 segundos** el reloj local del nodo receptor. Si el desfase es mayor, el bloque es descartado.
 3. **Límite `ExtraData` (`64 bytes`) y Verificación Paralela en Dos Fases:**
    * `header.Extra` está limitado estrictamente a `64 bytes` (`MaxExtraDataSize`). `VerifyHeaders` valida las reglas ligeras en microsegundos antes de distribuir `VerifySeal` entre `runtime.NumCPU()` workers en paralelo.
 4. **Prohibición Estricta de Bloques Tío (`UncleHash == EmptyUncleHash`):**
@@ -46,13 +46,12 @@ Para proteger la red frente a ataques time-warp, manipulación de dificultad y c
 
 ---
 
-## 🛡️ Finalidad Anti-51% de Tres Capas
+## 🛡️ Finalidad Anti-51%
 
-1. **Finalidad Rodante Dura (`MaxReorgDepth = 90` bloques):**
-   * Cualquier reorganización con profundidad mayor a `90 bloques` (~45 minutos) es rechazada incondicionalmente en `ForkChoice.ReorgNeeded`.
-2. **ECBP-1100 (MESS) desde el Bloque 0:**
-   * Las bifurcaciones secretas de profundidad `1..90` enfrentan una curva de gravedad polinómica cúbica que exige hasta **`31x` la dificultad de la subcadena local**.
-3. **Desempate Anti-Selfish Mining:**
+1. **ECBP-1100 (MESS) desde el Bloque 0:**
+   * Las bifurcaciones secretas tardías enfrentan una curva de gravedad polinómica cúbica que exige hasta **`31x` la dificultad de la subcadena local**.
+   * Calibrado con un **intervalo de seguridad de 15 minutos** (`artificialFinalitySafetyInterval = 900s`, equivalente a 30 bloques $\times$ 30s) para evitar falsas detecciones de cadenas obsoletas durante la varianza normal del PoW.
+2. **Desempate Anti-Selfish Mining:**
    * En empates de dificultad total, el nodo preserva su bloque minado localmente o desempata entre bloques externos mediante selección aleatoria criptográfica 50/50 (`crypto/rand`).
 
 ---

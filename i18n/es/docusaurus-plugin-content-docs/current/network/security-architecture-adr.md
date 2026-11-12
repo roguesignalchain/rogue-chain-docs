@@ -25,17 +25,16 @@ Este documento constituye la referencia oficial de ingeniería, seguridad y crip
 | **Ajuste de Dificultad (DAA)** | `LWMA-1 (N = 60)` | `CalculateDifficulty` (`difficulty.go`) | Ventana móvil ponderada de 60 bloques (~30 min), clamp `+-33%` por bloque |
 | **Dificultad Mínima / Génesis** | `0x10000` (`65,536`) | `MinDifficulty` (`difficulty.go`) | Arranque fluido para CPUs domésticas (~2.1 KH/s) |
 | **Regla Temporal Pasada** | `MTP-11 Estricto` | `CalculateMTP11` (`difficulty.go`) | `header.Time > Mediana(últimos 11 bloques)` |
-| **Deriva Temporal Futura Máxima** | `15 segundos` | `MaxFutureDrift` (`difficulty.go`) | `header.Time <= time.Now() + 15s` |
-| **Defensa Anti-51% (Capa 1)** | `MaxReorgDepth = 90 bloques` | `MaxRogueReorgDepth` (`forkchoice.go`) | Finalidad rodante dura (~45 min); rechaza reorganizaciones profundas |
-| **Defensa Anti-51% (Capa 2)** | `ECBP-1100 (MESS)` desde Bloque 0 | `ECBP1100FBlock = 0` (`blockchain_af.go`) | Penalización polinómica exigiendo hasta `31x` TD a cadenas secretas |
-| **Anti-Selfish Mining (Capa 3)** | `Desempate Eyal-Sirer` | `ReorgNeeded` (`forkchoice.go`) | Preserva bloque local o desempata con `crypto/rand` (50/50) |
+| **Deriva Temporal Futura Máxima** | `30 segundos` | `MaxFutureDrift` (`difficulty.go`) | `header.Time <= time.Now() + 30s` |
+| **Defensa Anti-51% (Capa 1)** | `ECBP-1100 (MESS)` desde Bloque 0 | `ECBP1100FBlock = 0` (`blockchain_af.go`) | Penalización polinómica exigiendo hasta `31x` TD a cadenas secretas |
+| **Anti-Selfish Mining (Capa 2)** | `Desempate Eyal-Sirer` | `ReorgNeeded` (`forkchoice.go`) | Preserva bloque local o desempata con `crypto/rand` (50/50) |
 | **Política de Bloques Uncle** | `Prohibidos (ErrUnclesNotAllowed)` | `VerifyUncles` / `verifyHeader` | Modelo Bitcoin puro (`header.UncleHash == EmptyUncleHash`) |
 | **Rotación de Semilla RandomX** | `2048 bloques` (~17.07 horas) | `EpochLength` (`epoch.go`) | Época estándar `rx/0` con `SeedLag = 64` bloques (~32 min precomputación) |
 | **Tamaño Máximo de `ExtraData`** | `64 bytes` | `MaxExtraDataSize` (`randomx.go`) | Permite etiquetas descriptivas e impide ataques de Header Bloat DoS |
-| **Límite de Gas por Bloque** | `60,000,000 gas` (`0x3938700`) | `genesis_rogue.go` / `miner.go` | Alta capacidad EVM por cada bloque de 30 segundos |
-| **Modelo de Comisiones EVM** | `PoW Clásico (100% al Minero)` | `config_rogue.go` / `ethconfig` | Sin quema EIP-1559; las comisiones sostienen a los mineros a largo plazo |
-| **Precio Mínimo de Gas (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | Protección anti-spam de transacciones gratuitas en el mempool P2P |
-| **Hash del Bloque Génesis (Bloque 0)** | `0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d` | `RogueGenesisHash` (`genesis_rogue.go`) | Fijado en `RequireBlockHashes[0]` para aislamiento criptográfico P2P |
+| **Límite de Gas por Bloque** | `50,000,000 gas` (`0x2faf080`) | `genesis_rogue.go` / `miner.go` | Alta capacidad EVM por cada bloque de 30 segundos |
+| **Modelo de Comisiones EVM** | `PoW Clásico (100% al Minero)` | `config_rogue.go` / `ethconfig` | Sin quema EIP-1559; solo tx legacy (tipo 0); 100% de comisiones al minero |
+| **Precio Mínimo de Gas (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | Protección anti-spam de transacciones gratuitas en mempool P2P (límite RAM 128 MB) |
+| **Hash del Bloque Génesis (Bloque 0)** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | `RogueGenesisHash` (`genesis_rogue.go`) | Fijado en `RequireBlockHashes[0]` para aislamiento criptográfico P2P |
 | **Inscripción del Bloque Génesis** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | Inscripción fundacional de 60 bytes grabada en el Bloque 0 |
 
 ---
@@ -94,28 +93,24 @@ Siguiendo los estándares probados en combate de **Monero, Bitcoin y Ethereum Cl
 1. **Cuello de Botella Físico de Caché L3 en RandomX (`rx/0`)**: Cada hilo de minería exige **2 MiB de caché L3 exclusiva en la CPU** y acceso aleatorio constante a un **dataset de 2080 MiB en RAM**. Los ASICs no pueden sintetizar código máquina dinámico aleatorio, las GPUs sufren penalizaciones severas por divergencia de ramificación, y los servidores multi-socket ven limitada su eficiencia por el ancho de banda del bus de memoria.
 2. **Eliminación Total de Stratum y RPCs de Minería Remota (`eth_getWork` Deshabilitado)**: En `consensus/randomx/api.go`, el puente Stratum y los métodos `eth_getWork`, `eth_submitWork` y `eth_submitHashrate` están deshabilitados permanentemente. Una granja no puede conectar 500 workers ligeros (`XMRig`) a un solo nodo central: **cada máquina que mine debe ejecutar un nodo EVM completo sincronizado (`core-rogue`)** con su propia base de datos y su propio dataset RandomX en memoria.
 3. **Intervalo de Bloque de 30 Segundos**: Elimina la ventaja de latencia P2P de la fibra óptica de centros de datos frente a conexiones domésticas.
-4. **LWMA-1 (`N=60`) + ECBP-1100 (MESS) + `MaxReorgDepth = 90`**: Neutraliza ataques del 51% con CPUs alquiladas en la nube y ataques de *coin-hopping*.
+4. **LWMA-1 (`N=60`) + ECBP-1100 (MESS)**: Neutraliza ataques del 51% con CPUs alquiladas en la nube y ataques de *coin-hopping*.
 
 ---
 
-### ADR-003: Defensa Anti-51% de Tres Capas (`MaxReorgDepth = 90` + `ECBP-1100 MESS` + Anti-Selfish Mining)
+### ADR-003: Defensa Anti-51% (`ECBP-1100 MESS` + Anti-Selfish Mining)
 
 #### Contexto y Problema
 Las redes PoW jóvenes minadas por CPU enfrentan la amenaza de que un atacante alquile servidores en la nube durante una hora, mine una bifurcación privada en aislamiento (*Secret Shadow Chain*) y la transmita de golpe para ejecutar una reorganización profunda (*Long-Range 51% Attack / Doble Gasto*).
 
 #### Decisión Adoptada
-Implementamos una **Defensa de Elección de Bifurcación (Fork-Choice) de Tres Capas Activa desde el Bloque 0** en `core/forkchoice.go`, `core/blockchain.go` y `params/config_rogue.go`:
+Implementamos **ECBP-1100 (MESS) Puro + Desempate Anti-Selfish Mining Activo desde el Bloque 0** en `core/forkchoice.go`, `core/blockchain.go` y `params/config_rogue.go`:
 
-1. **Capa 1 — Finalidad Rodante Dura (`MaxRogueReorgDepth = 90` bloques en `core/forkchoice.go`)**:
-   * Antes de aceptar cualquier reorganización de cadena en RandomX, `ForkChoice.ReorgNeeded` calcula la profundidad de retroceso desde la cabeza canónica actual (`current`) hasta el ancestro común (`commonHeader`):
-     ```text
-     reorgDepth = current.Number - commonHeader.Number
-     ```
-   * Si `reorgDepth > 90` bloques (~45 minutos a 30s/bloque), la reorganización es **rechazada incondicionalmente**, sin importar la dificultad total de la cadena atacante.
-   * La sincronización normal hacia adelante tiene `commonHeader == current` (`reorgDepth == 0`) y jamás se ve afectada.
-2. **Capa 2 — Penalización Exponencial Subjetiva (`ECBP-1100 MESS` en `core/blockchain_af.go`)**:
+1. **Capa 1 — Finalidad Artificial ECBP-1100 (MESS)**:
+   * Las bifurcaciones secretas tardías enfrentan una penalización de gravedad polinómica cúbica que exige hasta **`31x` la dificultad de la subcadena local**, sin bloquear de forma rígida a los nodos honestos ante sincronizaciones profundas o particiones legítimas (`MaxReorgDepth` eliminado).
+2. **Capa 2 — Penalización Exponencial Subjetiva (`ECBP-1100 MESS` en `core/blockchain_af.go` y `eth/sync.go`)**:
    * Activada desde el Bloque 0 (`ECBP1100FBlock = 0` en `RogueChainConfig` y habilitada por defecto en `NewBlockChain`).
    * Para bifurcaciones de profundidad `1..90`, MESS aplica un multiplicador de gravedad polinómico cúbico basado en la antigüedad del ancestro común (`delta_t = current.Time - commonAncestor.Time`), exigiendo que una cadena secreta acumule hasta **`31x` la dificultad de la subcadena local** para ser aceptada.
+   * Calibrada con `artificialFinalitySafetyInterval = 30 * 30 * time.Second` (**15 minutos** / 30 bloques Rogue), evitando falsas detecciones de cadenas obsoletas durante la varianza normal de bloques PoW.
 3. **Capa 3 — Desempate Anti-Selfish Mining (Regla Eyal-Sirer en `core/forkchoice.go`)**:
    * Cuando `externTd == localTD`, el nodo preserva su propio bloque minado localmente (`currentPreserve`) o desempata entre bloques externos mediante selección aleatoria criptográfica 50/50 (`crypto/rand`).
 
@@ -129,8 +124,8 @@ Implementamos una **Defensa de Elección de Bifurcación (Fork-Choice) de Tres C
    * Si falta algún bloque ancestro intermedio en la ventana de observación de LWMA-1, `CalculateDifficulty` retorna deterministamente `consensus.ErrUnknownAncestor` en lugar de caer en fallbacks silenciosos con dificultades desactualizadas.
 3. **Acotamiento de Solvetime y Clamping por Bloque (`+-33%`)**:
    * Los tiempos de resolución individuales en la ventana LWMA-1 de 60 bloques se acotan a `[1s, 6 * T = 180s]`, y el cambio de dificultad por bloque se restringe entre el **`67%`** (`MaxClampDownFactor`) y el **`133%`** (`MaxClampUpFactor`) de `parent.Difficulty`.
-4. **Regla Estricta `MTP-11` + `15s` de Deriva Futura Máxima + Alineación en `Prepare()`**:
-   * `VerifyHeaderTime` exige `header.Time > CalculateMTP11(chain, parent)` y `header.Time <= now + 15`.
+4. **Regla Estricta `MTP-11` + `30s` de Deriva Futura Máxima + Alineación en `Prepare()`**:
+   * `VerifyHeaderTime` exige `header.Time > CalculateMTP11(chain, parent)` y `header.Time <= now + 30`.
    * En `RandomX.Prepare` (`consensus/randomx/randomx.go`), si marcas de tiempo desordenadas en los últimos 11 bloques provocan que `header.Time <= CalculateMTP11(chain, parent)`, `Prepare` adelanta automáticamente `header.Time = mtp + 1` para que el minero local jamás selle un bloque que viole `ErrOlderBlockTime`.
 
 ---
@@ -147,7 +142,7 @@ Implementamos una **Defensa de Elección de Bifurcación (Fork-Choice) de Tres C
 3. **Precomputación de Dataset Amigable con la CPU (`NewFastDataset`)**:
    * La inicialización del dataset de 2080 MiB utiliza `max(1, runtime.NumCPU() / 2)` goroutines para que la precomputación en segundo plano durante la ventana `SeedLag` de 64 bloques (~32 minutos) deje libre el 50% de la CPU para la red P2P y el minado activo.
 4. **`VerifyHeaders` Paralelo Fail-Fast en Dos Fases, Límite ExtraData y Prohibición de Tíos**:
-   * **Fase 1 (Fail-Fast en microsegundos)**: Valida las reglas ligeras (`len(header.Extra) <= 64`, `header.UncleHash == EmptyUncleHash`, `MTP-11 + 15s drift`, dificultad `LWMA-1`, `GasUsed <= GasLimit` y rechazo de campos opcionales no nulos de bifurcaciones inactivas) antes de invocar CGo.
+   * **Fase 1 (Fail-Fast en microsegundos)**: Valida las reglas ligeras (`len(header.Extra) <= 64`, `header.UncleHash == EmptyUncleHash`, `MTP-11 + 30s drift`, dificultad `LWMA-1`, `GasUsed <= GasLimit` y rechazo de campos opcionales no nulos de bifurcaciones inactivas) antes de invocar CGo.
    * **Fase 2 (Pool Paralelo de Workers)**: Distribuye `VerifySeal` entre `runtime.NumCPU()` goroutines en paralelo, acelerando la sincronización inicial de cabeceras y mitigando ataques DoS de agotamiento de CPU.
 
 ---
@@ -157,11 +152,11 @@ Implementamos una **Defensa de Elección de Bifurcación (Fork-Choice) de Tres C
 1. **Anclaje Criptográfico del Bloque Génesis (`RequireBlockHashes[0]`)**:
    * El Bloque 0 (timestamp `1762711936` / `0x6910d980`, inscripción `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`) produce el hash canónico:
      ```text
-     0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d
+     0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7
      ```
    * Anclado en `RogueChainConfig.RequireBlockHashes[0]` (`params/config_rogue.go`) y sincronizado en `genesis.json`.
 2. **Suelo Anti-Spam del Mempool (`TxPool`)**:
-   * `TxPool.PriceLimit` y el `GasPrice` del minero se fijan por defecto en **`1 Gwei` (`10^9 wei`)** con `GasCeil = 60,000,000` (`eth/ethconfig/config.go`, `miner/miner.go`).
+   * `TxPool.PriceLimit` y el `GasPrice` del minero se fijan por defecto en **`1 Gwei` (`10^9 wei`)** con `GasCeil = 50,000,000` (`eth/ethconfig/config.go`, `miner/miner.go`).
 3. **Blindaje RPC y CORS en `rogue-desktop-client`**:
    * En `rogue-desktop-client/src-tauri/src/process_manager.rs`, `--http.corsdomain` y `--ws.origins` se restringen a `tauri://localhost,http://tauri.localhost,http://localhost:1420,http://127.0.0.1:1420` y se elimina el módulo legado `personal`.
 4. **Diagnóstico de Consenso en Tiempo Real y Controles Idempotentes**:

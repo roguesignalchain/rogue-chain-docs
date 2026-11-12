@@ -100,7 +100,7 @@ curl -X POST -H "Content-Type: application/json" \
 El motor de consenso RandomX expone métodos dedicados de diagnóstico y control bajo los namespaces `randomx` y `eth`. Nota: los métodos RPC de minería externa (`eth_getWork`, `eth_submitWork`, `eth_submitHashrate`) están deshabilitados permanentemente por diseño para garantizar la minería exclusiva con nodo completo.
 
 ### `randomx_getConsensusStatus`
-Devuelve en tiempo real los parámetros de consenso, altura de bloque actual, dificultad activa, desglose de recompensa (`25 ROGUE`: `23.75` minero / `1.25` tesorería), cuenta regresiva para el halving y defensas Anti-51% activas (`MaxReorgDepth = 90`, `ECBP-1100 MESS`).
+Devuelve en tiempo real los parámetros de consenso, altura de bloque actual, dificultad activa, desglose de recompensa (`25 ROGUE`: `23.75` minero / `1.25` tesorería), cuenta regresiva para el halving, telemetría del pool de VMs (`vmPool`) y defensas Anti-51% activas (`ECBP-1100 (MESS)`).
 
 #### Petición
 ```bash
@@ -116,25 +116,31 @@ curl -X POST -H "Content-Type: application/json" \
   "id": 1,
   "result": {
     "algorithm": "RandomX (rx/0)",
-    "blockNumber": 120,
-    "currentDifficulty": "68420",
     "targetBlockTime": 30,
     "lwmaWindow": 60,
     "mtpWindow": 11,
-    "maxFutureDrift": 15,
-    "maxReorgDepth": 90,
+    "maxFutureDrift": 30,
     "maxExtraDataSize": 64,
-    "messEnabled": true,
-    "halvingInterval": 2000000,
+    "finalityMode": "ECBP-1100 (MESS)",
+    "messActive": true,
+    "unclesAllowed": false,
+    "remoteMiningAllowed": false,
+    "currentBlock": 120,
     "currentEra": 0,
-    "nextHalvingBlock": 2000000,
-    "blocksUntilHalving": 2099880,
-    "baseRewardWei": "25000000000000000000",
-    "minerRewardWei": "22800000000000000000",
-    "treasuryRewardWei": "1200000000000000000",
+    "halvingInterval": 2000000,
+    "blocksUntilHalving": 1999880,
+    "blockRewardWei": "25000000000000000000",
+    "minerRewardWei": "23750000000000000000",
+    "treasuryRewardWei": "1250000000000000000",
     "treasuryAddress": "0xe9aae535b7971a9ac8c6af0e4b524d02260d3a03",
     "fastMode": false,
-    "hashrate": 1450
+    "localHashrate": 1450,
+    "vmPool": {
+      "totalVMs": 2,
+      "activeVMs": 0,
+      "mode": "light",
+      "allocatedMemoryMB": 256
+    }
   }
 }
 ```
@@ -162,7 +168,7 @@ curl -X POST -H "Content-Type: application/json" \
     "epochLength": 2048,
     "seedLag": 64,
     "seedBlock": 0,
-    "seedHash": "0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d",
+    "seedHash": "0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7",
     "nextEpochBlock": 2048,
     "blocksRemaining": 1928,
     "nextSeedBlock": 1984,

@@ -100,7 +100,7 @@ curl -X POST -H "Content-Type: application/json" \
 RandomX 共识引擎在 `randomx` 与 `eth` 命名空间下暴露了专用的诊断与控制接口。请注意，外部矿池/算力代理接口（`eth_getWork`、`eth_submitWork`、`eth_submitHashrate`）在设计上已被永久禁用，以坚决推行全节点独立挖矿（Solo Mining）。
 
 ### `randomx_getConsensusStatus`
-返回当前实时的共识参数、当前区块高度、实时难度、区块奖励拆分（`25 ROGUE`：`23.75` 矿工 / `1.25` 国库）、减半倒计时以及已激活的防 51% 安全防御参数（`MaxReorgDepth = 90`、`ECBP-1100 MESS`）。
+返回当前实时的共识参数、当前区块高度、实时难度、区块奖励拆分（`25 ROGUE`：`23.75` 矿工 / `1.25` 国库）、减半倒计时、虚拟机池遥测数据（`vmPool`）以及已激活的防 51% 安全防御参数（`ECBP-1100 (MESS)`）。
 
 #### 请求示例
 ```bash
@@ -116,25 +116,31 @@ curl -X POST -H "Content-Type: application/json" \
   "id": 1,
   "result": {
     "algorithm": "RandomX (rx/0)",
-    "blockNumber": 120,
-    "currentDifficulty": "68420",
     "targetBlockTime": 30,
     "lwmaWindow": 60,
     "mtpWindow": 11,
-    "maxFutureDrift": 15,
-    "maxReorgDepth": 90,
+    "maxFutureDrift": 30,
     "maxExtraDataSize": 64,
-    "messEnabled": true,
-    "halvingInterval": 2000000,
+    "finalityMode": "ECBP-1100 (MESS)",
+    "messActive": true,
+    "unclesAllowed": false,
+    "remoteMiningAllowed": false,
+    "currentBlock": 120,
     "currentEra": 0,
-    "nextHalvingBlock": 2000000,
-    "blocksUntilHalving": 2099880,
-    "baseRewardWei": "25000000000000000000",
-    "minerRewardWei": "22800000000000000000",
-    "treasuryRewardWei": "1200000000000000000",
+    "halvingInterval": 2000000,
+    "blocksUntilHalving": 1999880,
+    "blockRewardWei": "25000000000000000000",
+    "minerRewardWei": "23750000000000000000",
+    "treasuryRewardWei": "1250000000000000000",
     "treasuryAddress": "0xe9aae535b7971a9ac8c6af0e4b524d02260d3a03",
     "fastMode": false,
-    "hashrate": 1450
+    "localHashrate": 1450,
+    "vmPool": {
+      "totalVMs": 2,
+      "activeVMs": 0,
+      "mode": "light",
+      "allocatedMemoryMB": 256
+    }
   }
 }
 ```
@@ -162,7 +168,7 @@ curl -X POST -H "Content-Type: application/json" \
     "epochLength": 2048,
     "seedLag": 64,
     "seedBlock": 0,
-    "seedHash": "0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d",
+    "seedHash": "0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7",
     "nextEpochBlock": 2048,
     "blocksRemaining": 1928,
     "nextSeedBlock": 1984,

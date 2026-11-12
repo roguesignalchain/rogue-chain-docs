@@ -25,17 +25,16 @@ description: Rogue Signal 全面共识安全架构、防 51% 攻击技术屏障�
 | **难度调整算法 (DAA)** | `LWMA-1 (N = 60)` | `CalculateDifficulty` (`difficulty.go`) | 60 个历史区块（~30 分钟）线性加权移动平均，单块 `+-33%` 幅度限制 |
 | **最低 / 创世初始难度** | `0x10000` (`65,536`) | `MinDifficulty` (`difficulty.go`) | 消费级 CPU 顺畅启动创世开采的初始阈值（~2.1 KH/s） |
 | **历史时间戳约束** | `严格 MTP-11` | `CalculateMTP11` (`difficulty.go`) | 强制约束 `header.Time > Median(最近 11 个历史区块)` |
-| **未来时钟最大漂移** | `15 秒` | `MaxFutureDrift` (`difficulty.go`) | 强制约束 `header.Time <= 本地真实时间 + 15s` |
-| **防 51% 屏障（第 1 层）** | `MaxReorgDepth = 90 区块` | `MaxRogueReorgDepth` (`forkchoice.go`) | 硬性滚动终局性（~45 分钟）；坚决拒绝任何深度恶意重组分叉 |
-| **防 51% 屏障（第 2 层）** | 第 0 号区块起激活 `ECBP-1100 (MESS)` | `ECBP1100FBlock = 0` (`blockchain_af.go`) | 多项式重力惩罚曲线，滞后秘密分叉需要高达 `31 倍` 难度才能竞争 |
-| **防自私挖矿（第 3 层）** | `Eyal-Sirer 平局决胜规则` | `ReorgNeeded` (`forkchoice.go`) | 累计难度相同时优先保留本地开采区块；对外部区块采用 `crypto/rand` 随机决胜 (50/50) |
+| **未来时钟最大漂移** | `30 秒` | `MaxFutureDrift` (`difficulty.go`) | 强制约束 `header.Time <= 本地真实时间 + 30s` |
+| **防 51% 屏障（第 1 层）** | 第 0 号区块起激活 `ECBP-1100 (MESS)` | `ECBP1100FBlock = 0` (`blockchain_af.go`) | 多项式重力惩罚曲线，滞后秘密分叉需要高达 `31 倍` 难度才能竞争 |
+| **防自私挖矿（第 2 层）** | `Eyal-Sirer 平局决胜规则` | `ReorgNeeded` (`forkchoice.go`) | 累计难度相同时优先保留本地开采区块；对外部区块采用 `crypto/rand` 随机决胜 (50/50) |
 | **叔块/孤块策略** | `永久禁用 (ErrUnclesNotAllowed)` | `VerifyUncles` / `verifyHeader` | 纯粹比特币单链树形模型（`header.UncleHash == EmptyUncleHash`） |
 | **RandomX 种子轮换** | `2048 个区块` (~17.07 小时) | `EpochLength` (`epoch.go`) | 标准 `rx/0` 种子纪元，带 `SeedLag = 64` 区块（~32 分钟）预计算窗口 |
 | **`ExtraData` 最大长度** | `64 字节` | `MaxExtraDataSize` (`randomx.go`) | 允许节点包含标识信息的同时防范区块头膨胀 DoS 拒绝服务攻击 |
-| **区块 Gas 上限** | `60,000,000 gas` (`0x3938700`) | `genesis_rogue.go` / `miner.go` | 支撑 30 秒出块周期的高吞吐量 EVM 状态处理能力 |
-| **EVM 手续费模型** | `经典 PoW (100% 归矿工)` | `config_rogue.go` / `ethconfig` | 不设 EIP-1559 销毁机制；区块交易手续费在多轮减半后持续激励矿工 |
-| **最低交易 Gas 单价** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | 内存池（TxPool）垃圾交易防范底线，杜绝零手续费交易泛滥攻击 |
-| **创世区块哈希 (Block 0)** | `0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d` | `RogueGenesisHash` (`genesis_rogue.go`) | 硬编码至 `RequireBlockHashes[0]`，实现密码学层级的 P2P 隔离防护 |
+| **区块 Gas 上限** | `50,000,000 gas` (`0x2faf080`) | `genesis_rogue.go` / `miner.go` | 支撑 30 秒出块周期的高吞吐量 EVM 状态处理能力 |
+| **EVM 手续费模型** | `经典 PoW (100% 归矿工)` | `config_rogue.go` / `ethconfig` | 不设 EIP-1559 销毁机制；仅限传统 (type 0) 交易；100% 手续费归矿工 |
+| **最低交易 Gas 单价** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | 内存池（TxPool）垃圾交易防范底线，杜绝零手续费交易泛滥（128 MB 内存上限） |
+| **创世区块哈希 (Block 0)** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | `RogueGenesisHash` (`genesis_rogue.go`) | 硬编码至 `RequireBlockHashes[0]`，实现密码学层级的 P2P 隔离防护 |
 | **创世区块密码朋克铭文** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | 永久嵌入在第 0 号区块中的 60 字节赛博朋克创世宣言 |
 
 ---
@@ -94,28 +93,24 @@ P(delta_t < tau) = 1 - exp(-tau / T)
 1. **RandomX (`rx/0`) CPU L3 缓存物理瓶颈**：每个挖矿哈希线程必须独占 **2 MiB 的物理 CPU 三级缓存**，并对 **2080 MiB 的 RAM 数据集** 进行高频随机寻址。ASIC 无法低成本定制随机动态虚拟机，GPU 遭遇严重的分支发散延迟惩罚，而多路服务器 CPU 则受制于内存总线争抢带宽瓶颈。
 2. **彻底剔除 Stratum 协议与远程挖矿 RPC 接口（永久禁用 `eth_getWork`）**：在 `consensus/randomx/api.go` 中，永久禁用了 Stratum 桥接及 `eth_getWork` / `eth_submitWork` / `eth_submitHashrate`。大型矿场无法将 500 台轻量级 `XMRig` 无状态矿机指向同一节点：**每一台参与算力竞争的机器都必须本地运行并同步完整的 `core-rogue` EVM 全节点**，拥有独立的账本数据库和专属的 2080 MiB 内存上下文。
 3. **30 秒出块节奏**：消除了数据中心专用光纤网络面对家庭宽带连接时的微秒级 P2P 广播优势。
-4. **LWMA-1 (`N=60`) + ECBP-1100 (MESS) + `MaxReorgDepth = 90`**：彻底阻断了租借云服务器 CPU 实施的 51% 突发攻击与“算力跳跃（Coin-hopping）”套利行为。
+4. **LWMA-1 (`N=60`) + ECBP-1100 (MESS)**：彻底阻断了租借云服务器 CPU 实施的 51% 突发攻击与“算力跳跃（Coin-hopping）”套利行为。
 
 ---
 
-### ADR-003：三层防 51% 攻击终局性防护 (`MaxReorgDepth = 90` + `ECBP-1100 MESS` + 防自私挖矿)
+### ADR-003：防 51% 攻击终局性防护 (`ECBP-1100 MESS` + 防自私挖矿)
 
 #### 背景与待解决问题
 在采用 CPU 挖矿的早期公链中，攻击者往往可能短期租用大量云服务器，在离线状态下秘密开采一条私自分叉链（*影子链 Secret Shadow Chain*），随后一次性广播上线，实施深度回滚重组攻击（*长程 51% 双花攻击*）。
 
 #### 决策方案
-我们在 `core/forkchoice.go`、`core/blockchain.go` 与 `params/config_rogue.go` 中落地了**从第 0 号区块起全局生效的三层分叉选择防御体系**：
+我们在 `core/forkchoice.go`、`core/blockchain.go` 与 `params/config_rogue.go` 中落地了**从第 0 号区块起全局生效的纯 `ECBP-1100 (MESS)` + 防自私挖矿平局决胜体系**：
 
-1. **第 1 层 — 硬性滚动终局性 (`core/forkchoice.go` 中的 `MaxRogueReorgDepth = 90` 个区块)**：
-   * 在 RandomX 共识下接受任何链分叉重组之前，`ForkChoice.ReorgNeeded` 会精确计算从当前规范头节点（`current`）回滚至最近公共祖先节点（`commonHeader`）的回滚深度：
-     ```text
-     reorgDepth = current.Number - commonHeader.Number
-     ```
-   * 若 `reorgDepth > 90` 个区块（在 30 秒出块节奏下约为 45 分钟），无论攻击链声称的累计总难度（Total Difficulty）有多高，**一律无条件直接拒绝重组**。
-   * 新节点从创世区块开始正常的向前追赶同步，由于其 `commonHeader == current`（`reorgDepth == 0`），完全不受此规则限制。
-2. **第 2 层 — 改进型指数级主观评分 (`core/blockchain_af.go` 中的 `ECBP-1100 MESS`)**：
+1. **第 1 层 — `ECBP-1100 (MESS)` 人工终局性**：
+   * 延迟的秘密分叉将面临三次多项式重力惩罚，要求其累计难度必须高达本地子链的 **`31 倍`**，同时不会通过硬性锁定将诚实节点排除在合法的深度同步或网络分区之外（已移除 `MaxReorgDepth`）。
+2. **第 2 层 — 改进型指数级主观评分 (`core/blockchain_af.go` 及 `eth/sync.go` 中的 `ECBP-1100 MESS`)**：
    * 从第 0 号区块强制生效（`RogueChainConfig` 中设定 `ECBP1100FBlock = 0`，并在 `NewBlockChain` 中默认开启）。
-   * 对于深度在 `1..90` 个区块之间的分叉，MESS 根据公共祖先的滞后时间差（`delta_t = current.Time - commonAncestor.Time`）施加三次多项式重力惩罚系数，要求恶意隐秘分叉链必须开采出高达本地主链 **`31 倍`** 的累计绝对难度才会被网络接纳。
+   * 对于深度在 `1..90` 个区块之间的分叉，MESS 根据公共祖先的滞后时间差（`delta_t = current.Time - commonAncestor.Time`）施加三次多项式重力惩罚系数，要求恶意隐秘分叉链必须开采出高达本地子链 **`31 倍`** 的累计难度才会被网络接纳。
+   * 校准了 `artificialFinalitySafetyInterval = 30 * 30 * time.Second`（**15 分钟** / 30 个 Rogue 区块），防止在正常 PoW 出块方差期间误判陈旧链。
 3. **第 3 层 — 防自私挖矿平局决胜机制 (`core/forkchoice.go` 中的 Eyal-Sirer 规则)**：
    * 当出现外部链难度与本地链完全相同（`externTd == localTD`）时，节点坚决优先维护自身本地已挖出的区块（`currentPreserve`）；当竞争双方均为外部对等节点时，采用密码学伪随机数（`crypto/rand`）进行完全不可预测的 50/50 独立仲裁决胜。
 
@@ -129,8 +124,8 @@ P(delta_t < tau) = 1 - exp(-tau / T)
    * 若 LWMA-1 观察窗口内缺失任何中间历史祖先区块，`CalculateDifficulty` 会确定性抛出 `consensus.ErrUnknownAncestor` 错误，坚决不回退使用陈旧无效的过期难度。
 3. **单块出块耗时上下限与调整幅度钳制 (`+-33%`)**：
    * 60 个历史区块窗口中的单个出块耗时差值被严格限制在 `[1s, 6 * T = 180s]` 之间，且每个独立区块的难度调整幅度相对于父区块 `parent.Difficulty` 强制限定在 **`67%`** (`MaxClampDownFactor`) 至 **`133%`** (`MaxClampUpFactor`) 之间。
-4. **严格 `MTP-11` + `15s` 未来时间漂移限制 + `Prepare()` 时间戳自适应对齐**：
-   * `VerifyHeaderTime` 强制校验 `header.Time > CalculateMTP11(chain, parent)` 且 `header.Time <= 当前真实时间 + 15s`。
+4. **严格 `MTP-11` + `30s` 未来时间漂移限制 + `Prepare()` 时间戳自适应对齐**：
+   * `VerifyHeaderTime` 强制校验 `header.Time > CalculateMTP11(chain, parent)` 且 `header.Time <= 当前真实时间 + 30s`。
    * 在 `RandomX.Prepare`（`consensus/randomx/randomx.go`）中，若前 11 个区块中乱序的时间戳导致计算出的 `header.Time <= CalculateMTP11(chain, parent)`，`Prepare` 会自动平推调整为 `header.Time = mtp + 1`，确保本地独立矿工永远不会因本地时钟微小偏差而密封出违反 `ErrOlderBlockTime` 规则的非法区块。
 
 ---
@@ -147,7 +142,7 @@ P(delta_t < tau) = 1 - exp(-tau / T)
 3. **对 CPU 友好的后台数据集预计算 (`NewFastDataset`)**：
    * 数据集初始化过程严格将并行工作协程数限制为 `max(1, runtime.NumCPU() / 2)`，确保在 64 区块（~32 分钟）的 `SeedLag` 预计算延迟窗口内，保留至少 50% 的 CPU 硬件资源供 P2P 网络通信与正在进行的活跃挖矿平稳使用。
 4. **两阶段快速失败并行 `VerifyHeaders`、ExtraData 长度限制与禁用叔块**：
-   * **第 1 阶段（微秒级快速失败）**：在接触繁重的 CGo 逻辑前，优先在 Go 原生层高速验证轻量级规则（`len(header.Extra) <= 64`、`header.UncleHash == EmptyUncleHash`、`MTP-11 + 15s 漂移`、`LWMA-1 难度`、`GasUsed <= GasLimit` 以及拒绝非空硬分叉保留字段）。
+   * **第 1 阶段（微秒级快速失败）**：在接触繁重的 CGo 逻辑前，优先在 Go 原生层高速验证轻量级规则（`len(header.Extra) <= 64`、`header.UncleHash == EmptyUncleHash`、`MTP-11 + 30s 漂移`、`LWMA-1 难度`、`GasUsed <= GasLimit` 以及拒绝非空硬分叉保留字段）。
    * **第 2 阶段（并行工作协程池）**：将计算密集的 `VerifySeal` 任务分派至 `runtime.NumCPU()` 个工作协程并发执行，极大加速了区块头批量同步速度，化解了针对共识验证的 CPU 耗竭型攻击。
 
 ---
@@ -157,11 +152,11 @@ P(delta_t < tau) = 1 - exp(-tau / T)
 1. **创世区块哈希硬编码锚定 (`RequireBlockHashes[0]`)**：
    * 第 0 号创世区块（时间戳 `1762711936` / `0x6910d980`，嵌入赛博朋克铭文 `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`）产生权威确定的创世哈希：
      ```text
-     0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d
+     0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7
      ```
    * 该哈希在 `params/config_rogue.go` 的 `RogueChainConfig.RequireBlockHashes[0]` 中进行静态强制校验，并与 `genesis.json` 保持 100% 密码学一致。
 2. **交易内存池 (`TxPool`) 最低 Gas 单价防线**：
-   * 默认 `TxPool.PriceLimit` 与矿工默认 `GasPrice` 强制设定为 **`1 Gwei` (`10^9 wei`)**，并将单区块 Gas 上限设为 `GasCeil = 60,000,000`（`eth/ethconfig/config.go`, `miner/miner.go`）。
+   * 默认 `TxPool.PriceLimit` 与矿工默认 `GasPrice` 强制设定为 **`1 Gwei` (`10^9 wei`)**，并将单区块 Gas 上限设为 `GasCeil = 50,000,000`（`eth/ethconfig/config.go`, `miner/miner.go`）。
 3. **桌面客户端 RPC 接口与 CORS 跨域安全收敛**：
    * 在 `rogue-desktop-client/src-tauri/src/process_manager.rs` 中，`--http.corsdomain` 与 `--ws.origins` 严格收敛至本地受信源 `tauri://localhost,http://tauri.localhost,http://localhost:1420,http://127.0.0.1:1420`，并在默认开放列表中彻底移除了过时的 `personal` 命名空间。
 4. **实时共识自检诊断与幂等状态控制**：

@@ -53,17 +53,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/roguesignalchain/rogue-chain-docs/tree/main/',
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          editUrl: 'https://github.com/roguesignalchain/rogue-chain-docs/tree/main/',
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -79,7 +69,7 @@ const config: Config = {
         hashed: true,
         language: ['en', 'es', 'zh'],
         indexDocs: true,
-        indexBlog: true,
+        indexBlog: false,
         indexPages: true,
         highlightSearchTermsOnTargetPage: true,
       },
@@ -111,7 +101,6 @@ const config: Config = {
           label: 'Brand & Identity',
           position: 'left',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
           type: 'localeDropdown',
           position: 'right',

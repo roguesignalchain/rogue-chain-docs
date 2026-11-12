@@ -18,13 +18,15 @@ description: 使用消费级 CPU 与 RandomX 算法进行 ROGUE 挖矿的完整�
   --rogue \
   --mine \
   --miner.threads 8 \
-  --miner.etherbase 0xYourRogueAddressHere
+  --miner.etherbase 0xYourRogueAddressHere \
+  --miner.extradata "miner-tag"
 ```
 
 ### 独立挖矿参数说明
 * `--mine`：激活节点内置的 RandomX CPU 挖矿多线程引擎。
 * `--miner.threads <N>`：分配用于哈希运算的 CPU 线程数（用户 100% 自主配置；最佳算力效率为 `L3 缓存容量 (MiB) / 2`）。
 * `--miner.etherbase <0x...>`：接收出块奖励的钱包地址（每个有效区块可获得 **23.75 ROGUE** 基础奖励 + 100% 的区块打包交易手续费）。
+* `--miner.extradata "<tag>"`：可选矿工标识符（最多 64 字节），用于在运行多台矿机时确保各自拥有不同的 `sealhash` 目标。
 
 ---
 

@@ -23,12 +23,12 @@ description: Introducción al protocolo blockchain de Prueba de Trabajo (PoW) Ro
 | **Calendario de Halving** | `2,000,000 bloques` | Reducción a la mitad cada ~1.90 años (~694.44 días) a 30s por bloque |
 | **Emisión Máxima** | `100,000,000 ROGUE` | Límite matemático estricto en 32 eras, cero tail emission |
 | **Ajuste de Dificultad** | `LWMA-1 (N=60)` | Media móvil ponderada linealmente sobre 60 bloques (~30 min) |
-| **Reglas de Tiempo** | `MTP-11 Estricto` | Tiempo de bloque > Mediana de los últimos 11, máx. 15s de deriva futura |
-| **Finalidad Anti-51%** | `MESS + Reorg <= 90` | Gravedad polinómica ECBP-1100 (hasta 31x) + límite duro de 90 bloques |
+| **Reglas de Tiempo** | `MTP-11 Estricto` | Tiempo de bloque > Mediana de los últimos 11, máx. 30s de deriva futura |
+| **Finalidad Anti-51%** | `ECBP-1100 (MESS)` | Gravedad polinómica ECBP-1100 pura (hasta 31x TD, intervalo de seguridad 15m) desde el Bloque 0 |
 | **Rotación de Seed** | `2048 bloques` | Rotación de época RandomX (~17.07h) con desfase preventivo de 64 bloques (~32m) |
 | **Tamaño Máx. ExtraData** | `64 bytes` | Protección anti-DoS contra cabeceras infladas |
-| **Límite de Gas por Bloque** | `60,000,000 gas` | Alta capacidad EVM (`1 Gwei` mínimo en TxPool) |
-| **Hash del Bloque Génesis** | `0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d` | Anclado criptográficamente en `RequireBlockHashes[0]` |
+| **Límite de Gas por Bloque** | `50,000,000 gas` | Alta capacidad EVM (`1 Gwei` mínimo en TxPool, límite RAM de 128 MB) |
+| **Hash del Bloque Génesis** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | Anclado criptográficamente en `RequireBlockHashes[0]` |
 
 ---
 
@@ -41,7 +41,7 @@ Rogue Signal implementa de forma nativa el algoritmo `RandomX` (`rx/0`) en el co
 Construido sobre una sólida base Core-Geth optimizada, Rogue Signal ofrece compatibilidad completa con Solidity, librerías Web3 (`ethers.js`, `viem`, `web3.js`) y herramientas de desarrollo habituales como Hardhat, Foundry y MetaMask.
 
 ### 3. Dificultad Dinámica LWMA-1 y Seguridad Anti-51% de Tres Capas
-Las fluctuaciones imprevistas en la tasa de hash se amortiguan mediante **LWMA-1** (`N=60`) con acotamiento `+-33%` por bloque e independencia del timestamp candidato. Los ataques de reorganización profunda quedan neutralizados desde el Bloque 0 mediante **ECBP-1100 (MESS)** y una **finalidad rodante dura de 90 bloques (`MaxReorgDepth = 90`)**.
+Las fluctuaciones imprevistas en la tasa de hash se amortiguan mediante **LWMA-1** (`N=60`) con acotamiento `+-33%` por bloque e independencia del timestamp candidato. Los ataques de reorganización profunda quedan neutralizados desde el Bloque 0 mediante la puntuación exponencial **ECBP-1100 (MESS)**.
 
 ### 4. Tesorería de Protocolo Sostenible
 Cada bloque divide su recompensa entre el minero (95% / 23.75 ROGUE) y la tesorería del protocolo (5% / 1.25 ROGUE), garantizando financiamiento continuo para desarrollo, auditorías, seguridad e incentivos del ecosistema, sin preventas ni asignaciones previas a inversores.

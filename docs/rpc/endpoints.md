@@ -106,7 +106,7 @@ Returns live consensus parameters, current block height, active difficulty, bloc
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"randomx_getConsensusStatus","params":[],"id":1}' \
-  http://127.0.0.1:38845
+  http://127.0.0.1:8545
 ```
 
 #### Response

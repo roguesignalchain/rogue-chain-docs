@@ -124,8 +124,8 @@ We implemented **Pure ECBP-1100 (MESS) + Anti-Selfish Tie-Breaking Active from B
    * If any intermediate ancestor block in the LWMA-1 observation window is missing, `CalculateDifficulty` deterministically returns `consensus.ErrUnknownAncestor` instead of falling back to stale difficulty values.
 3. **Solvetime Bounds & Per-Block Clamping (`+-33%`)**:
    * Individual solvetimes in the 60-block LWMA-1 window are bounded to `[1s, 6 * T = 180s]`, and per-block difficulty changes are clamped between **`67%`** (`MaxClampDownFactor`) and **`133%`** (`MaxClampUpFactor`) of `parent.Difficulty`.
-4. **Strict `MTP-11` + `15s` Max Future Drift + `Prepare()` Timestamp Alignment**:
-   * `VerifyHeaderTime` enforces `header.Time > CalculateMTP11(chain, parent)` and `header.Time <= now + 15`.
+4. **Strict `MTP-11` + `30s` Max Future Drift + `Prepare()` Timestamp Alignment**:
+   * `VerifyHeaderTime` enforces `header.Time > CalculateMTP11(chain, parent)` and `header.Time <= now + 30`.
    * In `RandomX.Prepare` (`consensus/randomx/randomx.go`), if out-of-order timestamps in the last 11 blocks cause `header.Time <= CalculateMTP11(chain, parent)`, `Prepare` automatically advances `header.Time = mtp + 1` so local miners never seal a block that violates `ErrOlderBlockTime`.
 
 ---
@@ -142,7 +142,7 @@ We implemented **Pure ECBP-1100 (MESS) + Anti-Selfish Tie-Breaking Active from B
 3. **CPU-Friendly Dataset Precomputation (`NewFastDataset`)**:
    * Dataset initialization uses `max(1, runtime.NumCPU() / 2)` worker goroutines so background precomputation during the 64-block `SeedLag` window (~32 minutes) leaves 50% of CPU capacity available for P2P networking and active mining.
 4. **Two-Phase Fail-Fast Parallel `VerifyHeaders`, ExtraData Cap & Uncle Prohibition**:
-   * **Phase 1 (Fail-Fast in microseconds)**: Validates lightweight rules (`len(header.Extra) <= 64`, `header.UncleHash == EmptyUncleHash`, `MTP-11 + 15s drift`, `LWMA-1 difficulty`, `GasUsed <= GasLimit`, and non-nil optional fork field rejection) before touching CGo.
+   * **Phase 1 (Fail-Fast in microseconds)**: Validates lightweight rules (`len(header.Extra) <= 64`, `header.UncleHash == EmptyUncleHash`, `MTP-11 + 30s drift`, `LWMA-1 difficulty`, `GasUsed <= GasLimit`, and non-nil optional fork field rejection) before touching CGo.
    * **Phase 2 (Parallel Worker Pool)**: Dispatches `VerifySeal` across `runtime.NumCPU()` worker goroutines, accelerating initial header sync and mitigating CPU exhaustion DoS attacks.
 
 ---
@@ -152,11 +152,11 @@ We implemented **Pure ECBP-1100 (MESS) + Anti-Selfish Tie-Breaking Active from B
 1. **Cryptographic Genesis Anchoring (`RequireBlockHashes[0]`)**:
    * Block 0 (timestamp `1762711936` / `0x6910d980`, inscription `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`) produces the canonical hash:
      ```text
-     0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d
+     0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7
      ```
    * Locked in `RogueChainConfig.RequireBlockHashes[0]` (`params/config_rogue.go`) and synchronized in `genesis.json`.
 2. **Mempool (`TxPool`) Anti-Spam Floor**:
-   * Default `TxPool.PriceLimit` and miner `GasPrice` are set to **`1 Gwei` (`10^9 wei`)** with `GasCeil = 60,000,000` (`eth/ethconfig/config.go`, `miner/miner.go`).
+   * Default `TxPool.PriceLimit` and miner `GasPrice` are set to **`1 Gwei` (`10^9 wei`)** with `GasCeil = 50,000,000` (`eth/ethconfig/config.go`, `miner/miner.go`).
 3. **Desktop Client RPC & CORS Lockdown**:
    * In `rogue-desktop-client/src-tauri/src/process_manager.rs`, `--http.corsdomain` and `--ws.origins` are restricted to `tauri://localhost,http://tauri.localhost,http://localhost:1420,http://127.0.0.1:1420` and the legacy `personal` namespace is removed.
 4. **Real-Time Consensus Diagnostics & Idempotent Mode Controls**:

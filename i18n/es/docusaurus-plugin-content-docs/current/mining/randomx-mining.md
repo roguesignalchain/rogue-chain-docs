@@ -18,13 +18,15 @@ Puedes minar directamente desde el propio nodo hacia tu dirección:
   --rogue \
   --mine \
   --miner.threads 8 \
-  --miner.etherbase 0xTuDireccionRogueAqui
+  --miner.etherbase 0xTuDireccionRogueAqui \
+  --miner.extradata "miner-tag"
 ```
 
 ### Parámetros de Minado
 * `--mine`: Activa los hilos de cálculo de minería RandomX internos.
 * `--miner.threads <N>`: Asigna la cantidad de hilos de CPU dedicados al cálculo (100% configurable por el usuario; el punto óptimo de eficiencia es `Caché L3 (MiB) / 2`).
 * `--miner.etherbase <0x...>`: Dirección de destino donde se depositarán las recompensas de bloque (**23.75 ROGUE** por bloque + 100% de las comisiones de gas del bloque).
+* `--miner.extradata "<tag>"`: Identificador opcional del minero (hasta 64 bytes) para asegurar objetivos `sealhash` distintos al ejecutar múltiples mineros.
 
 ---
 
