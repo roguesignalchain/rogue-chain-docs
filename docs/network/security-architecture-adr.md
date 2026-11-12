@@ -25,17 +25,16 @@ This document serves as the official engineering and cryptoeconomic Architecture
 | **Difficulty Adjustment (DAA)** | `LWMA-1 (N = 60)` | `CalculateDifficulty` (`difficulty.go`) | 60-block (~30 min) linearly weighted window, `+-33%` per-block clamp |
 | **Minimum / Genesis Difficulty** | `0x10000` (`65,536`) | `MinDifficulty` (`difficulty.go`) | Smooth genesis bootstrap for consumer CPUs (~2.1 KH/s) |
 | **Past Timestamp Rule** | `Strict MTP-11` | `CalculateMTP11` (`difficulty.go`) | `header.Time > Median(last 11 blocks)` |
-| **Max Future Clock Drift** | `15 seconds` | `MaxFutureDrift` (`difficulty.go`) | `header.Time <= time.Now() + 15s` |
-| **Anti-51% Defense (Layer 1)** | `MaxReorgDepth = 90 blocks` | `MaxRogueReorgDepth` (`forkchoice.go`) | Hard rolling finality (~45 min); rejects deep chain reorganizations |
-| **Anti-51% Defense (Layer 2)** | `ECBP-1100 (MESS)` from Block 0 | `ECBP1100FBlock = 0` (`blockchain_af.go`) | Polynomial gravity curve requiring up to `31x` TD for late secret forks |
-| **Anti-Selfish Mining (Layer 3)** | `Eyal-Sirer Tie-Breaking` | `ReorgNeeded` (`forkchoice.go`) | Preserves local mined block or breaks ties via `crypto/rand` (50/50) |
+| **Max Future Clock Drift** | `30 seconds` | `MaxFutureDrift` (`difficulty.go`) | `header.Time <= time.Now() + 30s` |
+| **Anti-51% Defense (Layer 1)** | `ECBP-1100 (MESS)` from Block 0 | `ECBP1100FBlock = 0` (`blockchain_af.go`) | Polynomial gravity curve requiring up to `31x` TD for late secret forks |
+| **Anti-Selfish Mining (Layer 2)** | `Eyal-Sirer Tie-Breaking` | `ReorgNeeded` (`forkchoice.go`) | Preserves local mined block or breaks ties via `crypto/rand` (50/50) |
 | **Uncle Block Policy** | `Forbidden (ErrUnclesNotAllowed)` | `VerifyUncles` / `verifyHeader` | Pure Bitcoin block tree model (`header.UncleHash == EmptyUncleHash`) |
 | **RandomX Seed Rotation** | `2048 blocks` (~17.07 hours) | `EpochLength` (`epoch.go`) | Standard `rx/0` epoch with `SeedLag = 64` blocks (~32 min precompute) |
 | **Max `ExtraData` Size** | `64 bytes` | `MaxExtraDataSize` (`randomx.go`) | Allows descriptive node tags while preventing Header Bloat DoS |
-| **Block Gas Limit** | `60,000,000 gas` (`0x3938700`) | `genesis_rogue.go` / `miner.go` | High EVM throughput per 30-second block |
-| **EVM Fee Model** | `Classical PoW (100% to Miner)` | `config_rogue.go` / `ethconfig` | No EIP-1559 burn; transaction fees incentivize miners across halvings |
-| **Minimum Gas Price (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | P2P mempool spam protection against zero-fee transaction floods |
-| **Genesis Block Hash (Block 0)** | `0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d` | `RogueGenesisHash` (`genesis_rogue.go`) | Hardcoded in `RequireBlockHashes[0]` for cryptographic P2P isolation |
+| **Block Gas Limit** | `50,000,000 gas` (`0x2faf080`) | `genesis_rogue.go` / `miner.go` | High EVM throughput per 30-second block |
+| **EVM Fee Model** | `Classical PoW (100% to Miner)` | `config_rogue.go` / `ethconfig` | No EIP-1559 burn; legacy (type 0) tx only; 100% fees to miner |
+| **Minimum Gas Price (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | P2P mempool spam protection against zero-fee floods (128 MB max RAM cap) |
+| **Genesis Block Hash (Block 0)** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | `RogueGenesisHash` (`genesis_rogue.go`) | Hardcoded in `RequireBlockHashes[0]` for cryptographic P2P isolation |
 | **Genesis Cryptic Inscription** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | 60-byte cypherpunk inscription permanently embedded in Block 0 |
 
 ---
@@ -94,25 +93,20 @@ Following the battle-tested standards of **Monero, Bitcoin, and Ethereum Classic
 1. **RandomX (`rx/0`) L3 Cache Physical Bottleneck**: Every mining thread requires **2 MiB of dedicated CPU L3 cache** and continuous random access to a **2080 MiB RAM dataset**. ASICs cannot synthesize random dynamic machine code, GPUs suffer severe branch-divergence latency penalties, and multi-socket server CPUs are bottlenecked by memory bus bandwidth.
 2. **Complete Removal of Stratum & Remote Mining RPCs (`eth_getWork` Disabled)**: In `consensus/randomx/api.go`, the Stratum bridge and `eth_getWork` / `eth_submitWork` / `eth_submitHashrate` RPCs are permanently disabled. A mining farm cannot point 500 lightweight `XMRig` workers at a single node: **every machine that mines must run a fully synchronized EVM node (`core-rogue`)** with its own chain database and its own RandomX memory context.
 3. **30-Second Block Interval**: Eliminates the P2P latency advantage of datacenter fiber over residential internet connections.
-4. **LWMA-1 (`N=60`) + ECBP-1100 (MESS) + `MaxReorgDepth = 90`**: Neutralizes rented cloud-CPU 51% and coin-hopping attacks.
+4. **LWMA-1 (`N=60`) + ECBP-1100 (MESS)**: Neutralizes rented cloud-CPU 51% and coin-hopping attacks.
 
 ---
 
-### ADR-003: Three-Layer Anti-51% Defense (`MaxReorgDepth = 90` + `ECBP-1100 MESS` + Anti-Selfish Mining)
+### ADR-003: Anti-51% Defense (`ECBP-1100 MESS` + Anti-Selfish Mining)
 
 #### Context & Problem Statement
 Early-stage CPU-mined PoW networks face the threat of an attacker renting cloud servers for an hour, mining a private fork in isolation (*Secret Shadow Chain*), and broadcasting it all at once to execute a deep reorganization (*Long-Range 51% Attack / Double Spend*).
 
 #### Decision
-We implemented a **Three-Layer Fork-Choice Defense Active from Block 0** across `core/forkchoice.go`, `core/blockchain.go`, and `params/config_rogue.go`:
+We implemented **Pure ECBP-1100 (MESS) + Anti-Selfish Tie-Breaking Active from Block 0** across `core/forkchoice.go`, `core/blockchain.go`, and `params/config_rogue.go`:
 
-1. **Layer 1 — Hard Rolling Finality (`MaxRogueReorgDepth = 90` blocks in `core/forkchoice.go`)**:
-   * Before accepting any chain reorganization on RandomX, `ForkChoice.ReorgNeeded` computes the rollback depth from the current canonical head (`current`) back to `commonHeader`:
-     ```text
-     reorgDepth = current.Number - commonHeader.Number
-     ```
-   * If `reorgDepth > 90` blocks (~45 minutes at 30s/block), the reorganization is **unconditionally rejected**, regardless of the proposed chain's total difficulty.
-   * Normal forward synchronization from genesis or behind peers has `commonHeader == current` (`reorgDepth == 0`) and is completely unaffected.
+1. **Layer 1 — ECBP-1100 (MESS) Artificial Finality**:
+   * Late secret forks face a cubic polynomial gravity penalty requiring up to **`31x` the local subchain difficulty**, without hard-locking honest nodes out of legitimate deep syncs or partitions (`MaxReorgDepth` removed).
 2. **Layer 2 — Modified Exponential Subjective Scoring (`ECBP-1100 MESS` in `core/blockchain_af.go` & `eth/sync.go`)**:
    * Activated from Block 0 (`ECBP1100FBlock = 0` in `RogueChainConfig` and enabled by default in `NewBlockChain`).
    * For forks of depth `1..90`, MESS applies a cubic polynomial gravity multiplier based on the age of the common ancestor (`delta_t = current.Time - commonAncestor.Time`), requiring a secret chain to accumulate up to **`31x` the local subchain difficulty** to be accepted.

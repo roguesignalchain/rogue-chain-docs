@@ -23,12 +23,12 @@ description: Introduction to the Rogue Signal (ROGUE) Proof-of-Work blockchain p
 | **Halving Schedule** | `2,000,000 blocks` | Halving interval occurs approximately every 1.90 years (~694.44 days) at 30s cadence |
 | **Maximum Supply** | `100,000,000 ROGUE` | Exact mathematical hard cap across 32 eras, zero tail emission |
 | **Difficulty Algorithm** | `LWMA-1 (N=60)` | Linearly Weighted Moving Average over 60 blocks (~30 min window) |
-| **Timestamp Validation** | `Strict MTP-11` | Block time > Median of last 11 blocks, max 15s future drift |
-| **Anti-51% Finality** | `MESS + Reorg <= 90` | ECBP-1100 polynomial gravity (up to 31x) + 90-block hard rolling finality |
+| **Timestamp Validation** | `Strict MTP-11` | Block time > Median of last 11 blocks, max 30s future drift |
+| **Anti-51% Finality** | `ECBP-1100 (MESS)` | Pure ECBP-1100 polynomial gravity (up to 31x TD, 15m safety interval) from Block 0 |
 | **Seed Rotation** | `2048 blocks` | RandomX seed epoch rotation (~17.07h) with a 64-block (~32m) epoch lag |
 | **Max ExtraData Size** | `64 bytes` | Header bloat DoS protection |
-| **Block Gas Limit** | `60,000,000 gas` | High-throughput EVM block capacity (`1 Gwei` min TxPool floor) |
-| **Genesis Block Hash** | `0xc6f7f29d6a23f1921f3e514401a82a60ffa1f21885497dbf6414e8bb2f22b91d` | Cryptographically anchored in `RequireBlockHashes[0]` |
+| **Block Gas Limit** | `50,000,000 gas` | High-throughput EVM block capacity (`1 Gwei` min TxPool floor, 128 MB RAM cap) |
+| **Genesis Block Hash** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | Cryptographically anchored in `RequireBlockHashes[0]` |
 
 ---
 
@@ -41,7 +41,7 @@ Rogue Signal implements the battle-tested `RandomX` (`rx/0`) proof-of-work algor
 Built on a high-throughput Core-Geth foundation, Rogue Signal offers 100% compatibility with the Ethereum Virtual Machine, Solidity toolchains, Web3 libraries (`ethers.js`, `viem`, `web3.js`), and existing developer tooling like Hardhat, Foundry, and MetaMask.
 
 ### 3. Responsive Difficulty & Three-Layer Anti-51% Security
-Sudden hash rate fluctuations (hash jumps or rental attacks) are smoothly absorbed by the **LWMA-1** (`N=60`) difficulty adjustment engine with `+-33%` per-block clamping and candidate timestamp independence. Deep reorganization attacks are neutralized from Block 0 via **ECBP-1100 (MESS)** exponential scoring and a hard **90-block rolling finality depth (`MaxReorgDepth = 90`)**.
+Sudden hash rate fluctuations (hash jumps or rental attacks) are smoothly absorbed by the **LWMA-1** (`N=60`) difficulty adjustment engine with `+-33%` per-block clamping and candidate timestamp independence. Deep reorganization attacks are neutralized from Block 0 via **ECBP-1100 (MESS)** exponential scoring.
 
 ### 4. Sustainable Protocol Treasury
 Every block minted splits rewards between the active block miner (95% / 23.75 ROGUE) and the protocol treasury (5% / 1.25 ROGUE), ensuring perpetual developer funding, network maintenance, security audits, and ecosystem incentives without token pre-mines or ICO allocations.

@@ -38,7 +38,7 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
 1. **MTP-11 (Past Median Time):**
    * The timestamp of block `H` must be strictly greater than the median timestamp of the preceding 11 blocks (`H-11` through `H-1`). During local block assembly (`Prepare`), if out-of-order timestamps cause `parent.Time + 1 <= MTP-11`, the node automatically advances `header.Time = MTP-11 + 1`.
 2. **Future Drift Limit:**
-   * A candidate block's timestamp cannot exceed the local node's current wall-clock time by more than **15 seconds**. Blocks drifting further into the future are rejected.
+   * A candidate block's timestamp cannot exceed the local node's current wall-clock time by more than **30 seconds**. Blocks drifting further into the future are rejected.
 3. **Header `ExtraData` Cap (`64 bytes`) & Two-Phase Parallel Verification:**
    * `header.Extra` is strictly capped at `64 bytes` (`MaxExtraDataSize`). `VerifyHeaders` validates lightweight header rules in microseconds before dispatching RandomX `VerifySeal` across `runtime.NumCPU()` parallel workers.
 4. **Strict Uncle Block Prohibition (`UncleHash == EmptyUncleHash`):**
@@ -46,14 +46,12 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
 
 ---
 
-## 🛡️ Three-Layer Anti-51% Finality
+## 🛡️ Anti-51% Finality
 
-1. **Hard Rolling Finality (`MaxReorgDepth = 90` blocks):**
-   * Reorganizations deeper than `90 blocks` (~45 minutes) are unconditionally rejected in `ForkChoice.ReorgNeeded`.
-2. **ECBP-1100 (MESS) from Block 0:**
-   * Late secret forks of depth `1..90` face a cubic polynomial gravity penalty requiring up to **`31x` the local subchain difficulty**.
+1. **ECBP-1100 (MESS) from Block 0:**
+   * Late secret forks face a cubic polynomial gravity penalty requiring up to **`31x` the local subchain difficulty**.
    * Calibrated with a **15-minute safety interval** (`artificialFinalitySafetyInterval = 900s`, representing 30 blocks $\times$ 30s) to prevent false stale-chain detections during normal PoW block variance.
-3. **Anti-Selfish Mining Tie-Breaking:**
+2. **Anti-Selfish Mining Tie-Breaking:**
    * Equal-difficulty ties preserve locally mined blocks or break external ties via cryptographic 50/50 randomization (`crypto/rand`).
 
 ---
