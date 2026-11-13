@@ -5,7 +5,11 @@ description: Configuración de Huge Pages en Linux y optimización de hardware p
 
 # Huge Pages y Ajuste de CPU
 
-RandomX crea un conjunto de datos (dataset) de **2080 MiB** en memoria RAM para calcular hashes a máxima velocidad. Si el sistema no tiene activadas las páginas grandes (**Huge Pages**), las pérdidas en la memoria intermedia de traducción (TLB) de la CPU pueden mermar el rendimiento entre un 30% y un 50%.
+RandomX asigna un dataset de **2080 MiB** en Fast Mode (o una caché de **256 MiB** en Light Mode) para el cálculo de hashes. Sin Huge Pages habilitadas, los fallos en el búfer de traducción de direcciones (TLB) de la CPU reducen la eficiencia del hashing.
+
+:::tip Try-with-Fallback Automático sin Configuración
+`core-rogue` intenta automáticamente asignar `FastDataset`, `LightCache` y los *scratchpads* de la VM usando HugePages del sistema operativo (`RANDOMX_FLAG_LARGE_PAGES`) por defecto—no se requieren flags CLI adicionales. Si el sistema operativo no dispone de suficientes HugePages libres, `core-rogue` registra un aviso informativo y recurre de forma transparente a páginas de memoria estándar. Puedes verificar el uso activo de HugePages mediante `rogue_getConsensusStatus` (`vmPool.largePages: true/false`).
+:::
 
 ---
 

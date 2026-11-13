@@ -25,23 +25,37 @@ El ejecutable **`rogue-core-chain`** (`core-rogue`) es el software principal par
 Una vez compilado o descargado desde las releases oficiales, puedes iniciar el nodo con el siguiente comando:
 
 ```bash
-# Iniciar el nodo conectado a la red principal de Rogue Signal
-./build/bin/core-rogue --rogue --http --http.api "eth,net,web3,miner,randomx"
+# 1. Inicializar el estado génesis (inicialización headless sin fricción para Rogue Signal)
+./build/bin/core-rogue --rogue --datadir ~/.ethereum/rogue init
+
+# 2. Iniciar el nodo conectado a Rogue Signal usando los puertos estandarizados
+./build/bin/core-rogue --rogue \
+  --datadir ~/.ethereum/rogue \
+  --port 38888 \
+  --http --http.port 38845 --http.api "eth,net,web3,rogue"
 ```
 
 ### Opciones de Línea de Comandos Principales
 
-| Flag | Función | Predeterminado |
+| Flag | Función | Estándar Rogue Signal / Predeterminado |
 | :--- | :--- | :--- |
 | `--rogue` | Activa las reglas de consenso y el bloque génesis de Rogue Signal | Requerido |
 | `--datadir <ruta>` | Especifica el directorio de datos de la cadena | `~/.ethereum/rogue` |
+| `--port <puerto>` | Puerto de escucha P2P de la red | `38888` (genérico por defecto: `30303`) |
+| `--bootnodes <enodes>` | URLs `enode://` separadas por comas (sobrescribe la variable `ROGUE_BOOTNODES`) | `ROGUE_BOOTNODES` / `params.RogueBootnodes` |
 | `--http` | Habilita el servidor HTTP-RPC | `false` |
 | `--http.addr <ip>` | Interfaz de escucha para HTTP-RPC | `127.0.0.1` |
-| `--http.port <puerto>`| Puerto de escucha HTTP-RPC | `8545` |
-| `--http.api <apis>` | APIs expuestas separadas por comas (`eth,net,web3,miner,randomx,rogue`) | `eth,net,web3` |
+| `--http.port <puerto>`| Puerto de escucha HTTP-RPC | `38845` (genérico por defecto: `8545`) |
+| `--http.api <apis>` | Lista de APIs habilitadas separadas por comas (`eth,net,web3,rogue`) | `eth,net,web3,rogue` |
 | `--ws` | Habilita el servidor WebSocket RPC | `false` |
-| `--ws.port <puerto>` | Puerto de escucha para WebSocket | `8546` |
-| `--port <puerto>` | Puerto de escucha P2P de la red | `30303` |
+| `--ws.port <puerto>` | Puerto de escucha para WebSocket | `38846` (genérico por defecto: `8546`) |
+| `--mine` | Habilita la minería interna de CPU RandomX | `false` |
+| `--randomx.fast` | Habilita Fast Mode (~2.08 GB de dataset) cuando `--mine` está activo | `false` (Light Mode ~256 MB) |
+
+:::tip Bootnodes Dinámicos y Seguridad
+* **Bootnodes Dinámicos:** Mientras `RogueBootnodes` esté vacío durante el desarrollo, puedes inyectar bootnodes mediante la variable de entorno `ROGUE_BOOTNODES` o `--bootnodes`. Consulta [Configuración del Nodo y Bootnodes](./configuration.md) para más detalles.
+* **Endurecimiento RPC:** El namespace administrativo `randomx` (por ejemplo, `randomx_setFastMode`) está excluido de los módulos HTTP/WS por defecto para evitar DoS de asignación de memoria sin autenticación. Usa IPC local (`geth.ipc`) para llamadas administrativas, o consulta `rogue_getConsensusStatus` por HTTP.
+:::
 
 ---
 
@@ -52,7 +66,7 @@ Puedes comprobar si tu nodo ya está al día con la red ejecutando una llamada J
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 * Si el nodo está totalmente sincronizado, responderá `false`.

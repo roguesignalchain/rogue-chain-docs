@@ -39,7 +39,7 @@ Rogue Signal 协议的视觉标识采用双层架构体系：
 
 ---
 
-## 黑色技术图标（浅色表面与打印）
+### 黑色技术图标（浅色表面与打印）
 * **文件路径：** `/recursos/imagenes/roguechain-icon-black.png` (1254×1254px, RGBA 透明)
 * **优化尺寸包：** `/recursos/iconos/roguechain-icon-black-[size].png`
 * **适用场景：**

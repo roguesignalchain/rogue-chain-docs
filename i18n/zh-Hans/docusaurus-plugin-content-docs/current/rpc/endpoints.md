@@ -5,7 +5,13 @@ description: 标准以太坊与 RandomX 独有 RPC 接口的完整开发调用�
 
 # JSON-RPC API 接口参考
 
-`core-rogue` 核心节点通过 HTTP（`http://127.0.0.1:8545`）与 WebSocket（`ws://127.0.0.1:8546`）暴露完全符合 **以太坊 JSON-RPC 2.0** 规范的接口服务。
+`core-rogue` 核心节点通过 HTTP（标准化端口 `38845`，例如 `http://127.0.0.1:38845`）与 WebSocket（`ws://127.0.0.1:38846`）暴露完全符合 **以太坊 JSON-RPC 2.0** 规范的接口服务。
+
+:::info RPC 安全性与速率限制
+* **仅限传统交易（Legacy）：** `eth_sendRawTransaction` 在 Rogue Signal 上仅接受传统交易（`Type 0`）；类型化交易（EIP-1559 / EIP-2930 / EIP-4844）均会被拒绝。
+* **单 IP 连接上限：** HTTP/WS RPC 服务器对每个 IP 强制执行 **100 个并发请求** 的上限（超出返回 `HTTP 429 Too Many Requests`）。
+* **受保护的 `randomx` 命名空间：** `randomx` 默认在公共 HTTP/WS 模块（`eth,net,web3,rogue`）中禁用，以防止未授权调用 `randomx_setFastMode` 引发内存 DoS 攻击。请通过 HTTP 使用 `rogue_getConsensusStatus`，或通过本地 IPC（`geth.ipc`）连接执行 `randomx_*` 管理操作。
+:::
 
 ---
 
@@ -18,7 +24,7 @@ description: 标准以太坊与 RandomX 独有 RPC 接口的完整开发调用�
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### 响应示例
@@ -39,7 +45,7 @@ curl -X POST -H "Content-Type: application/json" \
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### 响应示例
@@ -60,7 +66,7 @@ curl -X POST -H "Content-Type: application/json" \
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x4290352A98018e61294F9c2794D0A50F59530590", "latest"],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### 响应示例
@@ -81,7 +87,7 @@ curl -X POST -H "Content-Type: application/json" \
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### 响应示例
@@ -106,7 +112,7 @@ RandomX 共识引擎在 `randomx` 与 `eth` 命名空间下暴露了专用的诊
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"randomx_getConsensusStatus","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### 响应示例
@@ -154,7 +160,7 @@ curl -X POST -H "Content-Type: application/json" \
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"randomx_getEpochInfo","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### 响应示例
@@ -191,6 +197,8 @@ curl -X POST -H "Content-Type: application/json" \
 
 矿工等级、经验值、进度 (`progressBps`)、多语言头衔 (`en`、`es`、`zh`) 与勋章 URI 均由创世区块（Block 0）部署的 `RogueMinerReputation` 系统合约 (`0x0000000000000000000000000000000000000020`) 直接在链上提供。旧版 `rogue_*` RPC 命名空间已下线，统一改用标准 EVM `eth_call` 与智能合约 `STATICCALL` 组合调用。
 
+如需获取公共共识遥测数据，请使用 `randomx_getConsensusStatus`（或针对 `0x...0020` 调用 `eth_call` 查询 PoW 声誉）。
+
 ### 使用 Foundry `cast` 查询 (`eth_call`)
 
 ```bash
@@ -205,6 +213,38 @@ cast call 0x0000000000000000000000000000000000000020 \
   "getMinerStats(address,string)((uint256,uint32,string,string,uint256,uint256,uint16))" \
   0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 "zh" \
   --rpc-url http://127.0.0.1:38845
+
+# 检查段位资格
+cast call 0x0000000000000000000000000000000000000020 \
+  "meetsLevel(address,uint32)(bool)" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 3 \
+  --rpc-url http://127.0.0.1:38845
+```
+
+### 从智能合约查询 (`STATICCALL`)
+
+```solidity
+import {IRogueMinerReputation} from "./interfaces/IRogueMinerReputation.sol";
+
+contract MinerGatedService {
+    IRogueMinerReputation constant REPUTATION =
+        IRogueMinerReputation(0x0000000000000000000000000000000000000020);
+
+    function accessTieredFeature(address miner) external view returns (bool) {
+        return REPUTATION.meetsLevel(miner, 3); // 需要 Hash Warden（100+ 个区块）
+    }
+}
+```
+
+### 从 TypeScript 查询 (`viem`)
+
+```ts
+const stats = await publicClient.readContract({
+  address: "0x0000000000000000000000000000000000000020",
+  abi: rogueReputationAbi,
+  functionName: "getMinerStats",
+  args: [minerAddress, "zh"],
+});
 ```
 
 #### 荣誉晋升阶梯表

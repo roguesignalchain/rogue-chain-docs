@@ -62,7 +62,8 @@ Para proteger la red frente a ataques time-warp, manipulación de dificultad y c
 * **Frecuencia de Halving:** Cada 2,000,000 bloques (~1.90 años / ~694.44 días a 30s por bloque)
 * **Porción del Minero (95%):** 23.75 ROGUE al inicio (+ 100% de las comisiones de gas del bloque)
 * **Porción de Tesorería (5%):** 1.25 ROGUE al inicio
-* **Límite Total de Emisión:** 100,000,000 ROGUE (límite matemático exacto en 32 eras de halving: 25 * 2,000,000 * 2 = 100,000,000 ROGUE, cero tail emission)
+* **Límite Total de Emisión:** 100,000,000 ROGUE (límite matemático exacto en 32 eras de halving: `25 * 2,000,000 * 2 = 100,000,000 ROGUE`, cero tail emission). En el bloque final de cada era de halving (`blockNumber % 2,000,000 == 0`), se suma `EraRemainderWei` (`727,595,761,750,000` wei) para compensar el truncamiento de desplazamiento de bits entero, de modo que el suministro acumulado sea exactamente `100,000,000.000000000000000000 ROGUE` al wei exacto.
+* **Formato de Transacciones:** Transacciones heredadas (`Type 0`) con protección estricta contra repetición EIP-155 desde el Bloque 0 (las transacciones tipadas EIP-2718/1559/2930/4844 son rechazadas).
 
 ---
 
@@ -72,9 +73,10 @@ import BadgeGallery from '@site/src/components/BadgeGallery';
 
 Para incentivar la minería en solitario sostenible y descentralizada sin alterar el límite monetario de la red ni la dificultad de consenso, Rogue Signal rastrea el conteo de bloques minados nativamente dentro del árbol de estado (*canonical state trie*):
 
-* **Persistencia de Estado:** Incrementado tras la finalización de cada bloque en el procesador de estado bajo la dirección del contrato del sistema `0x0000000000000000000000000000000000000020` en el slot `keccak256(miner.Bytes())`.
-* **Ventana Activa:** Activo a partir del Bloque 1 en adelante, preservando la raíz de estado del Bloque Génesis 0 intacta.
-* **Seguridad ante Reorganizaciones Deterministas:** Reorganizaciones de hasta 90 bloques revierten automáticamente los conteos de bloques de los mineros junto con los bloques de la cadena descartada.
+* **Contrato de Sistema (`RogueMinerReputation`):** Desplegado de forma nativa en el Bloque 0 (`Genesis.Alloc`) en la dirección `0x0000000000000000000000000000000000000020` con `Nonce = 1` (sobreviviendo la poda de cuentas vacías de EIP-158) y propietario inicial `Ownable` configurado en `RogueTreasuryAddress` (`0xe9aaE535B7971A9AC8C6af0e4B524D02260D3a03`).
+* **Persistencia de Estado:** Incrementado tras la finalización de cada bloque en `core/state_processor.go` usando el slot de almacenamiento `1` del `mapping(address => uint256)` de Solidity: `keccak256(abi.encode(miner, uint256(1)))`.
+* **Única Fuente de Verdad:** Los rangos, umbrales, `progressBps`, títulos localizados (`en`, `es`, `zh`, ampliables por gobernanza) y URIs de medallas se calculan directamente on-chain por `RogueMinerReputation` y son legibles vía `eth_call` o `STATICCALL` desde cualquier contrato inteligente.
+* **Seguridad ante Reorganizaciones Deterministas:** Las reorganizaciones de cadena bajo `ECBP-1100 (MESS)` revierten automáticamente los conteos de bloques de los mineros junto con los bloques de la cadena revertida.
 
 ### Galería de Rangos y Medallas
 

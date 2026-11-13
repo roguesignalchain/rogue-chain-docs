@@ -5,7 +5,11 @@ description: 调优 Linux 大页内存（Huge Pages）与硬件配置以榨取 R
 
 # 大页内存与 CPU 优化调优
 
-RandomX 算法在内存中分配高达 **2080 MiB** 的全模式（Fast Mode）超大随机数据集以进行高吞吐量哈希计算。若未开启大页内存（Huge Pages），CPU 的页表转换旁路缓冲（TLB）缺失率将大幅飙升，导致实际挖矿哈希率严重下降 30% 到 50%。
+RandomX 算法在全模式（Fast Mode）下分配 **2080 MiB** 的数据集（或在轻模式 Light Mode 下分配 **256 MiB** 的缓存）用于哈希计算。若未开启大页内存（Huge Pages），CPU 的页表转换旁路缓冲（TLB）缺失将降低哈希计算效率。
+
+:::tip 自动零配置 Try-with-Fallback 回退机制
+`core-rogue` 默认自动尝试使用操作系统大页内存（`RANDOMX_FLAG_LARGE_PAGES`）分配 `FastDataset`、`LightCache` 和虚拟机便笺内存（scratchpads）——无需额外命令行参数。如果操作系统没有足够的可用大页内存，`core-rogue` 会记录一条提示信息并无缝回退至标准内存页。您可以通过 `rogue_getConsensusStatus`（`vmPool.largePages: true/false`）验证大页内存的当前启用状态。
+:::
 
 ---
 

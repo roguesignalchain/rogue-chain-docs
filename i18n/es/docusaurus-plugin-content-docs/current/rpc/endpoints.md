@@ -5,7 +5,13 @@ description: Especificación completa de los métodos estándar de Ethereum y Ra
 
 # Referencia de la API JSON-RPC
 
-El nodo `core-rogue` expone una interfaz **JSON-RPC 2.0** compatible con Ethereum sobre HTTP (`http://127.0.0.1:8545`) y WebSocket (`ws://127.0.0.1:8546`).
+El nodo `core-rogue` expone una interfaz **JSON-RPC 2.0** totalmente compatible con Ethereum sobre HTTP (puerto estandarizado `38845`, p. ej. `http://127.0.0.1:38845`) y WebSocket (`ws://127.0.0.1:38846`).
+
+:::info Seguridad RPC y Limitación de Tasa
+* **Solo Transacciones Heredadas:** `eth_sendRawTransaction` únicamente acepta transacciones Legacy (`Type 0`) en Rogue Signal; las transacciones tipadas (EIP-1559 / EIP-2930 / EIP-4844) son rechazadas.
+* **Límite de Conexiones por IP:** El servidor RPC HTTP/WS aplica un límite de **100 peticiones concurrentes por IP** (`HTTP 429 Too Many Requests`).
+* **Namespace `randomx` Protegido:** `randomx` está deshabilitado en los módulos públicos HTTP/WS por defecto (`eth,net,web3,rogue`) para evitar DoS de memoria sin autenticación mediante `randomx_setFastMode`. Usa `rogue_getConsensusStatus` por HTTP, o conéctate vía IPC local (`geth.ipc`) para administración con `randomx_*`.
+:::
 
 ---
 
@@ -18,7 +24,7 @@ Devuelve el identificador único de la cadena en formato hexadecimal (`0xc3537` 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Respuesta
@@ -39,7 +45,7 @@ Devuelve el número del bloque más reciente sincronizado en formato hexadecimal
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Respuesta
@@ -60,7 +66,7 @@ Devuelve el saldo disponible en la dirección indicada expresado en Wei.
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x4290352A98018e61294F9c2794D0A50F59530590", "latest"],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Respuesta
@@ -81,7 +87,7 @@ Devuelve el número de pares (peers) P2P conectados actualmente al nodo.
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Respuesta
@@ -106,7 +112,7 @@ Devuelve en tiempo real los parámetros de consenso, altura de bloque actual, di
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"randomx_getConsensusStatus","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Respuesta
@@ -154,7 +160,7 @@ Devuelve los metadatos de la época de semilla RandomX actual, el bloque semilla
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"randomx_getEpochInfo","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Respuesta
@@ -191,6 +197,8 @@ curl -X POST -H "Content-Type: application/json" \
 
 Los rangos, XP, progreso (`progressBps`), títulos localizados (`en`, `es`, `zh`) y URIs de medallas se sirven directamente on-chain desde el contrato de sistema `RogueMinerReputation` desplegado en el Bloque 0 (`0x0000000000000000000000000000000000000020`). El namespace legado `rogue_*` fue retirado en favor de `eth_call` estándar y composabilidad EVM mediante `STATICCALL`.
 
+Para telemetría pública de consenso, usa `randomx_getConsensusStatus` (o `eth_call` contra `0x...0020` para reputación PoW).
+
 ### Consulta con Foundry `cast` (`eth_call`)
 
 ```bash
@@ -205,6 +213,38 @@ cast call 0x0000000000000000000000000000000000000020 \
   "getMinerStats(address,string)((uint256,uint32,string,string,uint256,uint256,uint16))" \
   0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 "es" \
   --rpc-url http://127.0.0.1:38845
+
+# Comprobar elegibilidad de rango
+cast call 0x0000000000000000000000000000000000000020 \
+  "meetsLevel(address,uint32)(bool)" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 3 \
+  --rpc-url http://127.0.0.1:38845
+```
+
+### Consulta desde Contratos Inteligentes (`STATICCALL`)
+
+```solidity
+import {IRogueMinerReputation} from "./interfaces/IRogueMinerReputation.sol";
+
+contract MinerGatedService {
+    IRogueMinerReputation constant REPUTATION =
+        IRogueMinerReputation(0x0000000000000000000000000000000000000020);
+
+    function accessTieredFeature(address miner) external view returns (bool) {
+        return REPUTATION.meetsLevel(miner, 3); // Requiere Hash Warden (100+ bloques)
+    }
+}
+```
+
+### Consulta desde TypeScript (`viem`)
+
+```ts
+const stats = await publicClient.readContract({
+  address: "0x0000000000000000000000000000000000000020",
+  abi: rogueReputationAbi,
+  functionName: "getMinerStats",
+  args: [minerAddress, "es"],
+});
 ```
 
 #### Tabla de Rangos y Medallas de Progresión
