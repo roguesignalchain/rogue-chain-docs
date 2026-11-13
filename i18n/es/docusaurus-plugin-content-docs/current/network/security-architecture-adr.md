@@ -34,7 +34,7 @@ Este documento constituye la referencia oficial de ingeniería, seguridad y crip
 | **Límite de Gas por Bloque** | `50,000,000 gas` (`0x2faf080`) | `genesis_rogue.go` / `miner.go` | Alta capacidad EVM por cada bloque de 30 segundos |
 | **Modelo de Comisiones EVM** | `PoW Clásico (100% al Minero)` | `config_rogue.go` / `ethconfig` | Sin quema EIP-1559; solo tx legacy (tipo 0); 100% de comisiones al minero |
 | **Precio Mínimo de Gas (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | Protección anti-spam de transacciones gratuitas en mempool P2P (límite RAM 128 MB) |
-| **Hash del Bloque Génesis (Bloque 0)** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | `RogueGenesisHash` (`genesis_rogue.go`) | Fijado en `RequireBlockHashes[0]` para aislamiento criptográfico P2P |
+| **Hash del Bloque Génesis (Bloque 0)** | `0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd` | `RogueGenesisHash` (`genesis_rogue.go`) | Fijado en `RequireBlockHashes[0]` para aislamiento criptográfico P2P |
 | **Inscripción del Bloque Génesis** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | Inscripción fundacional de 60 bytes grabada en el Bloque 0 |
 
 ---
@@ -152,7 +152,7 @@ Implementamos **ECBP-1100 (MESS) Puro + Desempate Anti-Selfish Mining Activo des
 1. **Anclaje Criptográfico del Bloque Génesis (`RequireBlockHashes[0]`)**:
    * El Bloque 0 (timestamp `1762711936` / `0x6910d980`, inscripción `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`) produce el hash canónico:
      ```text
-     0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7
+     0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd
      ```
    * Anclado en `RogueChainConfig.RequireBlockHashes[0]` (`params/config_rogue.go`) y sincronizado en `genesis.json`.
 2. **Suelo Anti-Spam del Mempool (`TxPool`)**:

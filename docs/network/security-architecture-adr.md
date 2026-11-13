@@ -34,7 +34,7 @@ This document serves as the official engineering and cryptoeconomic Architecture
 | **Block Gas Limit** | `50,000,000 gas` (`0x2faf080`) | `genesis_rogue.go` / `miner.go` | High EVM throughput per 30-second block |
 | **EVM Fee Model** | `Classical PoW (100% to Miner)` | `config_rogue.go` / `ethconfig` | No EIP-1559 burn; legacy (type 0) tx only; 100% fees to miner |
 | **Minimum Gas Price (TxPool)** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | P2P mempool spam protection against zero-fee floods (128 MB max RAM cap) |
-| **Genesis Block Hash (Block 0)** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | `RogueGenesisHash` (`genesis_rogue.go`) | Hardcoded in `RequireBlockHashes[0]` for cryptographic P2P isolation |
+| **Genesis Block Hash (Block 0)** | `0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd` | `RogueGenesisHash` (`genesis_rogue.go`) | Hardcoded in `RequireBlockHashes[0]` for cryptographic P2P isolation |
 | **Genesis Cryptic Inscription** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | 60-byte cypherpunk inscription permanently embedded in Block 0 |
 
 ---
@@ -152,7 +152,7 @@ We implemented **Pure ECBP-1100 (MESS) + Anti-Selfish Tie-Breaking Active from B
 1. **Cryptographic Genesis Anchoring (`RequireBlockHashes[0]`)**:
    * Block 0 (timestamp `1762711936` / `0x6910d980`, inscription `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`) produces the canonical hash:
      ```text
-     0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7
+     0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd
      ```
    * Locked in `RogueChainConfig.RequireBlockHashes[0]` (`params/config_rogue.go`) and synchronized in `genesis.json`.
 2. **Mempool (`TxPool`) Anti-Spam Floor**:

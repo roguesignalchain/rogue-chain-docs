@@ -168,7 +168,7 @@ curl -X POST -H "Content-Type: application/json" \
     "epochLength": 2048,
     "seedLag": 64,
     "seedBlock": 0,
-    "seedHash": "0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7",
+    "seedHash": "0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd",
     "nextEpochBlock": 2048,
     "blocksRemaining": 1928,
     "nextSeedBlock": 1984,
@@ -187,56 +187,24 @@ curl -X POST -H "Content-Type: application/json" \
 
 ---
 
-## 🎮 Métodos del Namespace `rogue` (Gamificación y Rangos)
+## 🏆 Reputación de Mineros On-Chain (`RogueMinerReputation` en `0x...0020`)
 
-El namespace `rogue` expone el sistema de niveles de minería, títulos y cálculos de XP en cadena respaldados directamente por el `StateDB` bajo la dirección de contrato del sistema `0x0000000000000000000000000000000000000020`.
+Los rangos, XP, progreso (`progressBps`), títulos localizados (`en`, `es`, `zh`) y URIs de medallas se sirven directamente on-chain desde el contrato de sistema `RogueMinerReputation` desplegado en el Bloque 0 (`0x0000000000000000000000000000000000000020`). El namespace legado `rogue_*` fue retirado en favor de `eth_call` estándar y composabilidad EVM mediante `STATICCALL`.
 
-### `rogue_getMinerLevel`
-Devuelve el rango numérico (de `0` a `6`) para cualquier dirección consultada.
+### Consulta con Foundry `cast` (`eth_call`)
 
-#### Petición
 ```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:8545
-```
+# Obtener nivel numérico (0..6)
+cast call 0x0000000000000000000000000000000000000020 \
+  "getMinerLevel(address)(uint32)" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 \
+  --rpc-url http://127.0.0.1:38845
 
-#### Respuesta
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": 1
-}
-```
-
----
-
-### `rogue_getMinerStats`
-Devuelve el registro completo de gamificación en cadena, título, XP y progreso de nivel para la dirección consultada.
-
-#### Petición
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:8545
-```
-
-#### Respuesta
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "address": "0x2fb9d05d39a1ee37fce2f00964d3b00c0a8677c7",
-    "blocksMined": 14,
-    "level": 1,
-    "title": "Recon Runner",
-    "currentXP": 14,
-    "nextLevelXP": 25,
-    "progressPercent": 54.17
-  }
-}
+# Obtener estadísticas completas localizadas ("en", "es", "zh")
+cast call 0x0000000000000000000000000000000000000020 \
+  "getMinerStats(address,string)((uint256,uint32,string,string,uint256,uint256,uint16))" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 "es" \
+  --rpc-url http://127.0.0.1:38845
 ```
 
 #### Tabla de Rangos y Medallas de Progresión

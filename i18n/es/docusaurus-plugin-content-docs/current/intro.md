@@ -28,7 +28,7 @@ description: Introducción al protocolo blockchain de Prueba de Trabajo (PoW) Ro
 | **Rotación de Seed** | `2048 bloques` | Rotación de época RandomX (~17.07h) con desfase preventivo de 64 bloques (~32m) |
 | **Tamaño Máx. ExtraData** | `64 bytes` | Protección anti-DoS contra cabeceras infladas |
 | **Límite de Gas por Bloque** | `50,000,000 gas` | Alta capacidad EVM (`1 Gwei` mínimo en TxPool, límite RAM de 128 MB) |
-| **Hash del Bloque Génesis** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | Anclado criptográficamente en `RequireBlockHashes[0]` |
+| **Hash del Bloque Génesis** | `0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd` | Anclado criptográficamente en `RequireBlockHashes[0]` |
 
 ---
 

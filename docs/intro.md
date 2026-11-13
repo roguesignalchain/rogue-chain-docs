@@ -28,7 +28,7 @@ description: Introduction to the Rogue Signal (ROGUE) Proof-of-Work blockchain p
 | **Seed Rotation** | `2048 blocks` | RandomX seed epoch rotation (~17.07h) with a 64-block (~32m) epoch lag |
 | **Max ExtraData Size** | `64 bytes` | Header bloat DoS protection |
 | **Block Gas Limit** | `50,000,000 gas` | High-throughput EVM block capacity (`1 Gwei` min TxPool floor, 128 MB RAM cap) |
-| **Genesis Block Hash** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | Cryptographically anchored in `RequireBlockHashes[0]` |
+| **Genesis Block Hash** | `0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd` | Cryptographically anchored in `RequireBlockHashes[0]` |
 
 ---
 

@@ -34,7 +34,7 @@ description: Rogue Signal 全面共识安全架构、防 51% 攻击技术屏障�
 | **区块 Gas 上限** | `50,000,000 gas` (`0x2faf080`) | `genesis_rogue.go` / `miner.go` | 支撑 30 秒出块周期的高吞吐量 EVM 状态处理能力 |
 | **EVM 手续费模型** | `经典 PoW (100% 归矿工)` | `config_rogue.go` / `ethconfig` | 不设 EIP-1559 销毁机制；仅限传统 (type 0) 交易；100% 手续费归矿工 |
 | **最低交易 Gas 单价** | `1 Gwei` (`10^9 wei`) | `eth/ethconfig/config.go` | 内存池（TxPool）垃圾交易防范底线，杜绝零手续费交易泛滥（128 MB 内存上限） |
-| **创世区块哈希 (Block 0)** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | `RogueGenesisHash` (`genesis_rogue.go`) | 硬编码至 `RequireBlockHashes[0]`，实现密码学层级的 P2P 隔离防护 |
+| **创世区块哈希 (Block 0)** | `0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd` | `RogueGenesisHash` (`genesis_rogue.go`) | 硬编码至 `RequireBlockHashes[0]`，实现密码学层级的 P2P 隔离防护 |
 | **创世区块密码朋克铭文** | `ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26` | `genesis.json` / `genesis_rogue.go` | 永久嵌入在第 0 号区块中的 60 字节赛博朋克创世宣言 |
 
 ---
@@ -152,7 +152,7 @@ P(delta_t < tau) = 1 - exp(-tau / T)
 1. **创世区块哈希硬编码锚定 (`RequireBlockHashes[0]`)**：
    * 第 0 号创世区块（时间戳 `1762711936` / `0x6910d980`，嵌入赛博朋克铭文 `"ROGUE::800055 // THE_SILICON_BELONGS_TO_THE_MANY // 09.11.26"`）产生权威确定的创世哈希：
      ```text
-     0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7
+     0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd
      ```
    * 该哈希在 `params/config_rogue.go` 的 `RogueChainConfig.RequireBlockHashes[0]` 中进行静态强制校验，并与 `genesis.json` 保持 100% 密码学一致。
 2. **交易内存池 (`TxPool`) 最低 Gas 单价防线**：

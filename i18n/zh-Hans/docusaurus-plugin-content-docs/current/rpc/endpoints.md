@@ -168,7 +168,7 @@ curl -X POST -H "Content-Type: application/json" \
     "epochLength": 2048,
     "seedLag": 64,
     "seedBlock": 0,
-    "seedHash": "0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7",
+    "seedHash": "0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd",
     "nextEpochBlock": 2048,
     "blocksRemaining": 1928,
     "nextSeedBlock": 1984,
@@ -187,56 +187,24 @@ curl -X POST -H "Content-Type: application/json" \
 
 ---
 
-## 🎮 协议级游戏化与荣誉接口 (`rogue_`)
+## 🏆 链上矿工声誉合约 (`RogueMinerReputation` 地址 `0x...0020`)
 
-`rogue` 命名空间暴露链上矿工状态、荣誉等级、称号以及经验值（XP）计算，底层由 `StateDB` 系统合约地址 `0x0000000000000000000000000000000000000020` 直接支撑。
+矿工等级、经验值、进度 (`progressBps`)、多语言头衔 (`en`、`es`、`zh`) 与勋章 URI 均由创世区块（Block 0）部署的 `RogueMinerReputation` 系统合约 (`0x0000000000000000000000000000000000000020`) 直接在链上提供。旧版 `rogue_*` RPC 命名空间已下线，统一改用标准 EVM `eth_call` 与智能合约 `STATICCALL` 组合调用。
 
-### `rogue_getMinerLevel`
-返回查询地址达到的数字段位等级（从 `0` 到 `6`）。
+### 使用 Foundry `cast` 查询 (`eth_call`)
 
-#### 请求示例
 ```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:8545
-```
+# 获取数字等级 (0..6)
+cast call 0x0000000000000000000000000000000000000020 \
+  "getMinerLevel(address)(uint32)" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 \
+  --rpc-url http://127.0.0.1:38845
 
-#### 响应示例
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": 1
-}
-```
-
----
-
-### `rogue_getMinerStats`
-返回指定地址完整的链上荣誉记录、专属称号、当前 XP 以及升级进度。
-
-#### 请求示例
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:8545
-```
-
-#### 响应示例
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "address": "0x2fb9d05d39a1ee37fce2f00964d3b00c0a8677c7",
-    "blocksMined": 14,
-    "level": 1,
-    "title": "Recon Runner",
-    "currentXP": 14,
-    "nextLevelXP": 25,
-    "progressPercent": 54.17
-  }
-}
+# 获取本地化完整数据 ("en", "es", "zh")
+cast call 0x0000000000000000000000000000000000000020 \
+  "getMinerStats(address,string)((uint256,uint32,string,string,uint256,uint256,uint16))" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 "zh" \
+  --rpc-url http://127.0.0.1:38845
 ```
 
 #### 荣誉晋升阶梯表

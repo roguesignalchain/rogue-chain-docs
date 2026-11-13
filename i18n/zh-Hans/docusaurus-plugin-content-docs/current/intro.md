@@ -28,7 +28,7 @@ description: Rogue Signal (ROGUE) 随机X (RandomX) 工作量证明区块链协�
 | **种子轮换机制** | `2048 个区块` | RandomX 种子轮换周期（~17.07 小时），带 64 区块（~32 分钟）预计算延迟 |
 | **ExtraData 最大限制** | `64 字节` | 防范区块头膨胀的 DoS 保护机制 |
 | **区块 Gas 上限** | `50,000,000 gas` | 高吞吐量 EVM 状态容量（TxPool 最低手续费 `1 Gwei`，128 MB RAM 上限） |
-| **创世区块哈希** | `0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7` | 密码学硬编码锚定于 `RequireBlockHashes[0]` |
+| **创世区块哈希** | `0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd` | 密码学硬编码锚定于 `RequireBlockHashes[0]` |
 
 ---
 

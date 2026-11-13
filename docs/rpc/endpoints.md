@@ -174,7 +174,7 @@ curl -X POST -H "Content-Type: application/json" \
     "epochLength": 2048,
     "seedLag": 64,
     "seedBlock": 0,
-    "seedHash": "0xf30f172028b07950de58d2cb4d65593793c183fcd0f86c9c24c5d4a037b490b7",
+    "seedHash": "0xde4c5e747fbb072d39db2ece5a245e46b6164045e166301dfdba78f86cfbe4dd",
     "nextEpochBlock": 2048,
     "blocksRemaining": 1928,
     "nextSeedBlock": 1984,
@@ -193,68 +193,58 @@ curl -X POST -H "Content-Type: application/json" \
 
 ---
 
-## 🎮 Protocol Gamification & Consensus Endpoints (`rogue_`)
+## 🏆 On-Chain Miner Reputation (`RogueMinerReputation` at `0x...0020`)
 
-The `rogue` namespace is enabled publicly by default and exposes on-chain miner status, levels, titles, XP calculations backed directly by `StateDB` (`0x0000000000000000000000000000000000000020`), and live consensus status.
+Miner ranks, XP, progress (`progressBps`), localized rank titles (`en`, `es`, `zh`), and badge URIs are served directly on-chain by the `RogueMinerReputation` system contract deployed at Block 0 (`0x0000000000000000000000000000000000000020`). The legacy `rogue_*` RPC namespace has been retired in favor of standard EVM `eth_call` and on-chain `STATICCALL` composability.
 
-### `rogue_getConsensusStatus`
-Publicly exposes the same live consensus parameters, monetary schedule, `vmPool` telemetry, and `epochInfo` as `randomx_getConsensusStatus` without requiring administrative `randomx` RPC access.
+For public consensus telemetry, use `randomx_getConsensusStatus` (or `eth_call` against `0x...0020` for PoW reputation).
 
-#### Request
+### Querying via Foundry `cast` (`eth_call`)
+
 ```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getConsensusStatus","params":[],"id":1}' \
-  http://127.0.0.1:38845
+# Get numeric level (0..6)
+cast call 0x0000000000000000000000000000000000000020 \
+  "getMinerLevel(address)(uint32)" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 \
+  --rpc-url http://127.0.0.1:38845
+
+# Get full stats localized in English, Spanish, or Chinese ("en", "es", "zh")
+cast call 0x0000000000000000000000000000000000000020 \
+  "getMinerStats(address,string)((uint256,uint32,string,string,uint256,uint256,uint16))" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 "en" \
+  --rpc-url http://127.0.0.1:38845
+
+# Check tier eligibility
+cast call 0x0000000000000000000000000000000000000020 \
+  "meetsLevel(address,uint32)(bool)" \
+  0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7 3 \
+  --rpc-url http://127.0.0.1:38845
 ```
 
----
+### Querying from Smart Contracts (`STATICCALL`)
 
-### `rogue_getMinerLevel`
-Returns the numeric rank level (from `0` to `6`) for any queried address.
+```solidity
+import {IRogueMinerReputation} from "./interfaces/IRogueMinerReputation.sol";
 
-#### Request
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:38845
-```
+contract MinerGatedService {
+    IRogueMinerReputation constant REPUTATION =
+        IRogueMinerReputation(0x0000000000000000000000000000000000000020);
 
-#### Response
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": 1
+    function accessTieredFeature(address miner) external view returns (bool) {
+        return REPUTATION.meetsLevel(miner, 3); // Requires Hash Warden (100+ blocks)
+    }
 }
 ```
 
----
+### Querying from TypeScript (`viem`)
 
-### `rogue_getMinerStats`
-Returns the complete on-chain gamification record, title, XP, and level progress.
-
-#### Request
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:38845
-```
-
-#### Response
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "address": "0x2fb9d05d39a1ee37fce2f00964d3b00c0a8677c7",
-    "blocksMined": 14,
-    "level": 1,
-    "title": "Recon Runner",
-    "currentXP": 14,
-    "nextLevelXP": 25,
-    "progressPercent": 54.17
-  }
-}
+```ts
+const stats = await publicClient.readContract({
+  address: "0x0000000000000000000000000000000000000020",
+  abi: rogueReputationAbi,
+  functionName: "getMinerStats",
+  args: [minerAddress, "en"],
+});
 ```
 
 #### Progression Tiers Table

@@ -73,8 +73,9 @@ import BadgeGallery from '@site/src/components/BadgeGallery';
 
 To encourage sustainable, decentralized home solo-mining without altering the network monetary cap or consensus difficulty, Rogue Signal tracks miner block counts natively inside the canonical state trie:
 
-* **State Persistence:** Incremented upon block finalization in `core/state_processor.go` under system contract address `0x0000000000000000000000000000000000000020` (`keccak256(miner.Bytes())`), with `Nonce = 1` to persist safely across EIP-158 state clearing.
-* **Active Window:** Active from Block 1 onwards, keeping Genesis Block 0 state root unmodified.
+* **System Contract (`RogueMinerReputation`):** Deployed natively at Block 0 (`Genesis.Alloc`) at address `0x0000000000000000000000000000000000000020` with `Nonce = 1` (surviving EIP-158 empty-account pruning) and initial `Ownable` owner set to `RogueTreasuryAddress` (`0xe9aaE535B7971A9AC8C6af0e4B524D02260D3a03`).
+* **State Persistence:** Incremented upon block finalization in `core/state_processor.go` using Solidity `mapping(address => uint256)` storage slot `1`: `keccak256(abi.encode(miner, uint256(1)))`.
+* **Single Source of Truth:** Ranks, thresholds, `progressBps`, localized titles (`en`, `es`, `zh`, expandable by governance), and badge URIs are computed directly on-chain by `RogueMinerReputation` and readable via `eth_call` or `STATICCALL` from any smart contract.
 * **Deterministic Reorg Safety:** Chain reorganizations under `ECBP-1100 (MESS)` automatically unwind miner block counts with the reverted chain blocks.
 
 ### Miner Level Showcase
