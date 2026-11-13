@@ -107,5 +107,6 @@ If you run an isolated 1-node or 2-node local testnet, initial sync still procee
 
 * **Berlin & London Security EIPs:** `EIP-2565` (ModExp), `EIP-2929` (cold/warm state access gas repricing against I/O DoS on 50M gas blocks), `EIP-3529` (gas refund cap), and `EIP-3541` (rejection of `0xEF` contract bytecode).
 * **Shanghai & Cancun Opcodes:** `EIP-3651` (Warm `COINBASE`), `EIP-3855` (`PUSH0`), `EIP-3860` (initcode size limit & metering), `EIP-6049`, `EIP-5656` (`MCOPY`), and `EIP-1153` (`TSTORE`/`TLOAD`).
-* **TxPool & RPC Anti-DoS:** `TxPool` bounded to `3072` global slots / `1024` queue (~128 MB max RAM cap), `PriceLimit = 1 GWei`, and `maxHTTPConnsPerIP = 100` concurrent HTTP requests per IP.
+* **TxPool & RPC Anti-DoS:** `TxPool` bounded to `3072` global slots / `1024` queue (~128 MB max RAM cap), `PriceLimit = 1 GWei`, and configurable per-IP HTTP/WebSocket concurrency limiting (`--http.maxconnsperip`, default `100`, returning `HTTP 429` with `Retry-After: 1`).
+* **Reverse Proxy Hardening (`--http.trustedproxies`):** Fail-closed by default (uses direct peer IP). When deployed behind Nginx, Caddy, Traefik, or Cloudflare, configure `--http.trustedproxies "127.0.0.1/32"` (or your proxy CIDRs) to extract the real client IP via the **Rightmost Untrusted IP** algorithm on `X-Forwarded-For` (with `X-Real-IP` fallback), preventing header-spoofing bypasses.
 * **Batch Header Verification Cache:** `MaxResolvedSeedCache = 2048` (~80 KB RAM) prevents LRU thrashing during parallel `VerifyHeaders` sync batches.
