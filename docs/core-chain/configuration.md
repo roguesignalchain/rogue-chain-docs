@@ -98,3 +98,14 @@ During pre-launch development, `params.RogueBootnodes` is intentionally kept emp
 :::note Small Testnet Topologies (< 3 Peers)
 If you run an isolated 1-node or 2-node local testnet, initial sync still proceeds via the 10-second `forceSyncCycle` ticker, while `minArtificialFinalityPeers = 3` ensures full MESS re-activation threshold once 3+ peers are connected.
 :::
+
+---
+
+## 🛡️ Protocol Hardening & EVM Profile (Block 0)
+
+`RogueChainConfig` activates a hardened, modern EVM baseline from Block 0 while preserving legacy-only (`Type 0`) transaction simplicity and predictable gas fees:
+
+* **Berlin & London Security EIPs:** `EIP-2565` (ModExp), `EIP-2929` (cold/warm state access gas repricing against I/O DoS on 50M gas blocks), `EIP-3529` (gas refund cap), and `EIP-3541` (rejection of `0xEF` contract bytecode).
+* **Shanghai & Cancun Opcodes:** `EIP-3651` (Warm `COINBASE`), `EIP-3855` (`PUSH0`), `EIP-3860` (initcode size limit & metering), `EIP-6049`, `EIP-5656` (`MCOPY`), and `EIP-1153` (`TSTORE`/`TLOAD`).
+* **TxPool & RPC Anti-DoS:** `TxPool` bounded to `3072` global slots / `1024` queue (~128 MB max RAM cap), `PriceLimit = 1 GWei`, and `maxHTTPConnsPerIP = 100` concurrent HTTP requests per IP.
+* **Batch Header Verification Cache:** `MaxResolvedSeedCache = 2048` (~80 KB RAM) prevents LRU thrashing during parallel `VerifyHeaders` sync batches.

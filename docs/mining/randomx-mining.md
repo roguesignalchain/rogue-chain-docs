@@ -49,3 +49,12 @@ To protect network decentralization and prevent industrial mining farms or cloud
 * **External Stratum Bridges & `eth_getWork` Are Disabled:** The `eth_getWork`, `eth_submitWork`, and `eth_submitHashrate` RPC methods are permanently disabled at the consensus layer (`consensus/randomx/api.go`).
 * **1 Node = 1 Independent Miner:** Every machine participating in Proof-of-Work must run a fully synchronized `core-rogue` EVM node with its own chain state and its own 2080 MiB RandomX RAM dataset.
 * **Zero Artificial Yield Penalties:** Every valid PoW block receives 100% of its **25 ROGUE** emission (`23.75 ROGUE` to the miner and `1.25 ROGUE` to the protocol treasury) immediately upon inclusion.
+
+---
+
+## 🧠 Memory & Concurrency Hardening
+
+* **Zero-Redundancy Fast Mode RAM:** Once the ~2.08 GB `FastDataset` is initialized for an epoch, the temporary 256 MB `LightCache` is immediately released, saving 256 MB per epoch context.
+* **Bounded Context Cache:** `EpochManager` retains up to `3` contexts in Light Mode (~768 MB max) and caps `FastMode` to `2` contexts (`MaxCachedContextsFast = 2`, ~4.16 GB max during 64-block seed transitions) to prevent OOM spikes.
+* **Non-Blocking Asynchronous Sealing:** `Seal()` executes epoch context initialization and parallel `PrewarmVMs` asynchronously inside the sealing goroutine so `miner/worker` never stalls on epoch transitions or `stop` signals.
+* **W^X / Kernel Fallback Visibility:** If the host kernel blocks JIT (`RANDOMX_FLAG_JIT`), `core-rogue` logs a clear warning and degrades gracefully to `RANDOMX_FLAG_SECURE` or interpreter mode while caching the effective flags.
