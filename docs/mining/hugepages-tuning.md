@@ -5,7 +5,11 @@ description: Tuning Linux Huge Pages and hardware settings for maximum RandomX h
 
 # Huge Pages & CPU Optimization
 
-RandomX allocates a **2080 MiB** light/fast dataset in memory for high-performance hashing. Without Huge Pages enabled, CPU translation lookaside buffer (TLB) misses drastically reduce hashing efficiency by 30% to 50%.
+RandomX allocates a **2080 MiB** dataset in Fast Mode (or **256 MiB** cache in Light Mode) for hashing. Without Huge Pages enabled, CPU translation lookaside buffer (TLB) misses reduce hashing efficiency.
+
+:::tip Automatic Zero-Config Try-with-Fallback
+`core-rogue` automatically attempts to allocate `FastDataset`, `LightCache`, and VM scratchpads using OS HugePages (`RANDOMX_FLAG_LARGE_PAGES`) by default—no extra CLI flags are required. If the OS does not have enough free HugePages, `core-rogue` logs an informational notice and seamlessly falls back to standard memory pages. You can verify active HugePages usage via `rogue_getConsensusStatus` (`vmPool.largePages: true/false`).
+:::
 
 ---
 
