@@ -25,7 +25,7 @@ To mine directly from the core node daemon into your recipient address:
 ### Solo Mining Parameters
 * `--mine`: Enables the internal RandomX CPU miner thread engine.
 * `--miner.threads <N>`: Sets the number of CPU threads allocated to hashing (100% user-configurable; optimal efficiency is `L3 Cache (MiB) / 2`).
-* `--miner.etherbase <0x...>`: Destination address where all block rewards (**23.75 ROGUE** per block + 100% of block transaction fees) are deposited.
+* `--miner.etherbase <0x...>`: Destination address where all block rewards (**23.75 ROGUE** per block + 100% of block transaction fees) are deposited. *(Optional for quick-start: if omitted, mining starts without blocking, logs a single brief warning, and routes the 95% miner reward to the protocol treasury until an address is configured via `--miner.etherbase` or `miner_setEtherbase`.)*
 * `--miner.extradata "<tag>"`: Optional miner identifier (up to 64 bytes) to ensure distinct `sealhash` targets when running multiple miners.
 
 ---
