@@ -62,7 +62,8 @@ To protect against "timewarp", difficulty manipulation, and header bloat attacks
 * **Halving Cadence:** Every 2,000,000 blocks (~1.90 years / ~694.44 days at 30s per block)
 * **Miner Share (95%):** 23.75 ROGUE initially (+ 100% of block transaction fees)
 * **Treasury Share (5%):** 1.25 ROGUE initially
-* **Total Supply Cap:** 100,000,000 ROGUE (exact mathematical limit across 32 halving eras: 25 * 2,000,000 * 2 = 100,000,000 ROGUE, zero tail emission)
+* **Total Supply Cap:** 100,000,000 ROGUE (exact geometric limit across 32 halving eras: `25 * 2,000,000 * 2 = 100,000,000 ROGUE`, zero tail emission). On the final block of each halving era (`blockNumber % 2,000,000 == 0`), `EraRemainderWei` (`727,595,761,750,000` wei) is added to compensate integer bit-shift truncation so cumulative supply equals `100,000,000.000000000000000000 ROGUE` to the exact wei.
+* **Transaction Format:** Legacy (`Type 0`) transactions with strict EIP-155 replay protection from Block 0 (EIP-2718/1559/2930/4844 typed transactions are rejected).
 
 ---
 
@@ -72,9 +73,9 @@ import BadgeGallery from '@site/src/components/BadgeGallery';
 
 To encourage sustainable, decentralized home solo-mining without altering the network monetary cap or consensus difficulty, Rogue Signal tracks miner block counts natively inside the canonical state trie:
 
-* **State Persistence:** Incremented upon block finalization in `core/state_processor.go` under system contract address `0x0000000000000000000000000000000000000020` (`keccak256(miner.Bytes())`).
+* **State Persistence:** Incremented upon block finalization in `core/state_processor.go` under system contract address `0x0000000000000000000000000000000000000020` (`keccak256(miner.Bytes())`), with `Nonce = 1` to persist safely across EIP-158 state clearing.
 * **Active Window:** Active from Block 1 onwards, keeping Genesis Block 0 state root unmodified.
-* **Deterministic Reorg Safety:** Reorganizations up to 90 blocks automatically unwind miner block counts with the reverted chain blocks.
+* **Deterministic Reorg Safety:** Chain reorganizations under `ECBP-1100 (MESS)` automatically unwind miner block counts with the reverted chain blocks.
 
 ### Miner Level Showcase
 

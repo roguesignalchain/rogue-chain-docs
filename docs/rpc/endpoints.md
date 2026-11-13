@@ -5,7 +5,13 @@ description: Complete reference for standard Ethereum and RandomX RPC endpoints.
 
 # JSON-RPC API Reference
 
-The `core-rogue` node exposes a fully compliant **Ethereum JSON-RPC 2.0** API over HTTP (`http://127.0.0.1:8545`) and WebSocket (`ws://127.0.0.1:8546`).
+The `core-rogue` node exposes a fully compliant **Ethereum JSON-RPC 2.0** API over HTTP (standardized port `38845`, e.g. `http://127.0.0.1:38845`) and WebSocket (`ws://127.0.0.1:38846`).
+
+:::info RPC Security & Rate Limiting
+* **Legacy Transactions Only:** `eth_sendRawTransaction` only accepts Legacy (`Type 0`) transactions on Rogue Signal; typed transactions (EIP-1559 / EIP-2930 / EIP-4844) are rejected.
+* **Per-IP Connection Cap:** The HTTP/WS RPC server enforces a limit of **100 concurrent requests per IP** (`HTTP 429 Too Many Requests`).
+* **Protected `randomx` Namespace:** `randomx` is disabled on default public HTTP/WS modules (`eth,net,web3,rogue`) to prevent unauthenticated memory DoS via `randomx_setFastMode`. Use `rogue_getConsensusStatus` over HTTP, or connect via local IPC (`geth.ipc`) for `randomx_*` administration.
+:::
 
 ---
 
@@ -18,7 +24,7 @@ Returns the network's chain ID in hexadecimal format (`0xc3537` = `800055`).
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response
@@ -39,7 +45,7 @@ Returns the current highest synced block number in hexadecimal.
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response
@@ -60,7 +66,7 @@ Returns the balance of the given account in Wei.
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x4290352A98018e61294F9c2794D0A50F59530590", "latest"],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response
@@ -81,7 +87,7 @@ Returns the number of active P2P peers connected to your node.
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response
@@ -106,7 +112,7 @@ Returns live consensus parameters, current block height, active difficulty, bloc
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"randomx_getConsensusStatus","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response
@@ -154,7 +160,7 @@ Returns the current RandomX seed epoch metadata, seed block height (`E * 2048 - 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"randomx_getEpochInfo","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response
@@ -187,9 +193,21 @@ curl -X POST -H "Content-Type: application/json" \
 
 ---
 
-## 🎮 Protocol Gamification Endpoints (`rogue_`)
+## 🎮 Protocol Gamification & Consensus Endpoints (`rogue_`)
 
-The `rogue` namespace exposes on-chain miner status, levels, titles, and XP calculations backed directly by the `StateDB` under system address `0x0000000000000000000000000000000000000020`.
+The `rogue` namespace is enabled publicly by default and exposes on-chain miner status, levels, titles, XP calculations backed directly by `StateDB` (`0x0000000000000000000000000000000000000020`), and live consensus status.
+
+### `rogue_getConsensusStatus`
+Publicly exposes the same live consensus parameters, monetary schedule, `vmPool` telemetry, and `epochInfo` as `randomx_getConsensusStatus` without requiring administrative `randomx` RPC access.
+
+#### Request
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"rogue_getConsensusStatus","params":[],"id":1}' \
+  http://127.0.0.1:38845
+```
+
+---
 
 ### `rogue_getMinerLevel`
 Returns the numeric rank level (from `0` to `6`) for any queried address.
@@ -198,7 +216,7 @@ Returns the numeric rank level (from `0` to `6`) for any queried address.
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"rogue_getMinerLevel","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response
@@ -219,7 +237,7 @@ Returns the complete on-chain gamification record, title, XP, and level progress
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"rogue_getMinerStats","params":["0x2fB9D05d39A1eE37Fce2F00964D3B00C0a8677c7"],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 #### Response

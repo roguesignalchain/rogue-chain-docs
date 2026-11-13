@@ -22,26 +22,40 @@ The **`rogue-core-chain`** daemon (`core-rogue`) is the primary node software fo
 
 ## 🚀 Running the Node
 
-Once built or downloaded from the official release page, launch the node using the standard CLI:
+Once built or downloaded from the official release page, initialize and launch the node using the standard CLI:
 
 ```bash
-# Launch the node connected to Rogue Signal mainnet
-./build/bin/core-rogue --rogue --http --http.api "eth,net,web3,miner,randomx"
+# 1. Initialize genesis state (zero-friction headless init for Rogue Signal)
+./build/bin/core-rogue --rogue --datadir ~/.ethereum/rogue init
+
+# 2. Launch the node connected to Rogue Signal using standardized ports
+./build/bin/core-rogue --rogue \
+  --datadir ~/.ethereum/rogue \
+  --port 38888 \
+  --http --http.port 38845 --http.api "eth,net,web3,rogue"
 ```
 
 ### Essential CLI Flags
 
-| Flag | Purpose | Default |
+| Flag | Purpose | Rogue Signal Standard / Default |
 | :--- | :--- | :--- |
-| `--rogue` | Connects to the Rogue Signal mainnet consensus rules and genesis | Required |
+| `--rogue` | Connects to the Rogue Signal network consensus rules and genesis | Required |
 | `--datadir <path>` | Specifies custom blockchain data directory | `~/.ethereum/rogue` |
+| `--port <port>` | Network P2P listening port | `38888` (generic default: `30303`) |
+| `--bootnodes <enodes>` | Comma-separated `enode://` URLs (overrides `ROGUE_BOOTNODES` env var) | `ROGUE_BOOTNODES` / `params.RogueBootnodes` |
 | `--http` | Enables the HTTP-RPC server | `false` |
 | `--http.addr <ip>` | HTTP-RPC listening interface | `127.0.0.1` |
-| `--http.port <port>` | HTTP-RPC listening port | `8545` |
-| `--http.api <apis>` | Comma-separated list of enabled APIs (`eth,net,web3,miner,randomx,rogue`) | `eth,net,web3` |
+| `--http.port <port>` | HTTP-RPC listening port | `38845` (generic default: `8545`) |
+| `--http.api <apis>` | Comma-separated list of enabled APIs (`eth,net,web3,rogue`) | `eth,net,web3,rogue` |
 | `--ws` | Enables WebSocket RPC server | `false` |
-| `--ws.port <port>` | WebSocket listening port | `8546` |
-| `--port <port>` | Network P2P listening port | `30303` |
+| `--ws.port <port>` | WebSocket listening port | `38846` (generic default: `8546`) |
+| `--mine` | Enables internal RandomX CPU mining | `false` |
+| `--randomx.fast` | Enables Fast Mode (~2.08 GB dataset) when `--mine` is active | `false` (Light Mode ~256 MB) |
+
+:::tip Dynamic Bootnodes & Security
+* **Dynamic Bootnodes:** While `RogueBootnodes` is empty during development, you can inject bootnodes via the `ROGUE_BOOTNODES` environment variable or `--bootnodes`. See [Node Configuration & Bootnodes](./configuration.md) for details.
+* **RPC Hardening:** The `randomx` administrative namespace (e.g., `randomx_setFastMode`) is excluded from default HTTP/WS modules to prevent unauthenticated memory-allocation DoS. Use local IPC (`geth.ipc`) for administrative calls, or query `rogue_getConsensusStatus` over HTTP.
+:::
 
 ---
 
@@ -52,7 +66,7 @@ You can check whether your node is synchronized by executing a simple JSON-RPC c
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' \
-  http://127.0.0.1:8545
+  http://127.0.0.1:38845
 ```
 
 * If the node is synchronized, it returns `false`.
