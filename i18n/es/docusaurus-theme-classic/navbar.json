@@ -1,0 +1,38 @@
+{
+  "title": {
+    "message": "ROGUE SIGNAL",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Isotipo Técnico de Rogue Signal",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.User Guides": {
+    "message": "Guías de Usuario",
+    "description": "Navbar item with label User Guides"
+  },
+  "item.label.Developer Guides": {
+    "message": "Guías de Desarrolladores",
+    "description": "Navbar item with label Developer Guides"
+  },
+  "item.label.Protocol & API": {
+    "message": "Protocolo y API",
+    "description": "Navbar item with label Protocol & API"
+  },
+  "item.label.Brand & Identity": {
+    "message": "Marca e Identidad",
+    "description": "Navbar item with label Brand & Identity"
+  },
+  "item.label.Discord": {
+    "message": "Discord",
+    "description": "Navbar item with label Discord"
+  },
+  "item.label.X (Twitter)": {
+    "message": "X (Twitter)",
+    "description": "Navbar item with label X (Twitter)"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

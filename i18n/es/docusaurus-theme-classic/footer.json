@@ -1,0 +1,78 @@
+{
+  "link.title.Documentation": {
+    "message": "Documentación",
+    "description": "The title of the footer links column with title=Documentation in the footer"
+  },
+  "link.title.Ecosystem": {
+    "message": "Ecosistema",
+    "description": "The title of the footer links column with title=Ecosystem in the footer"
+  },
+  "link.title.Community": {
+    "message": "Comunidad",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.item.label.Overview & Parameters": {
+    "message": "Resumen y Parámetros",
+    "description": "The label of footer link with label=Overview & Parameters linking to /docs/intro"
+  },
+  "link.item.label.Running a Node": {
+    "message": "Ejecutar un Nodo",
+    "description": "The label of footer link with label=Running a Node linking to /docs/users/running-a-node"
+  },
+  "link.item.label.Desktop Client": {
+    "message": "Cliente Desktop",
+    "description": "The label of footer link with label=Desktop Client linking to /docs/users/desktop-client"
+  },
+  "link.item.label.Mining Guide": {
+    "message": "Guía de Minería",
+    "description": "The label of footer link with label=Mining Guide linking to /docs/users/mining-guide"
+  },
+  "link.item.label.Developer Guides": {
+    "message": "Guías de Desarrolladores",
+    "description": "The label of footer link with label=Developer Guides linking to /docs/developers/compiling-from-source"
+  },
+  "link.item.label.JSON-RPC Reference": {
+    "message": "Referencia JSON-RPC",
+    "description": "The label of footer link with label=JSON-RPC Reference linking to /docs/rpc/endpoints"
+  },
+  "link.item.label.Brand & Design System": {
+    "message": "Marca y Sistema de Diseño",
+    "description": "The label of footer link with label=Brand & Design System linking to /docs/brand/brand-overview"
+  },
+  "link.item.label.Official Website": {
+    "message": "Sitio Web Oficial",
+    "description": "The label of footer link with label=Official Website linking to https://roguesignal.org"
+  },
+  "link.item.label.Block Explorer": {
+    "message": "Explorador de Bloques",
+    "description": "The label of footer link with label=Block Explorer linking to https://explorer.roguesignal.org"
+  },
+  "link.item.label.Core Chain Repository": {
+    "message": "Repositorio Core Chain",
+    "description": "The label of footer link with label=Core Chain Repository linking to https://github.com/roguesignalchain/rogue-core-chain"
+  },
+  "link.item.label.Desktop Client Repository": {
+    "message": "Repositorio Cliente Desktop",
+    "description": "The label of footer link with label=Desktop Client Repository linking to https://github.com/roguesignalchain/rogue-desktop-client"
+  },
+  "link.item.label.Discord": {
+    "message": "Discord",
+    "description": "The label of footer link with label=Discord linking to https://discord.gg/c6bwF6Wk6c"
+  },
+  "link.item.label.Telegram Community": {
+    "message": "Comunidad de Telegram",
+    "description": "The label of footer link with label=Telegram Community linking to https://t.me/roguesignalchain"
+  },
+  "link.item.label.X (Twitter)": {
+    "message": "X (Twitter)",
+    "description": "The label of footer link with label=X (Twitter) linking to https://x.com/roguesignal_"
+  },
+  "link.item.label.GitHub Organization": {
+    "message": "Organización en GitHub",
+    "description": "The label of footer link with label=GitHub Organization linking to https://github.com/roguesignalchain"
+  },
+  "copyright": {
+    "message": "Copyright © 2026 Rogue Signal Protocol. Construido con Docusaurus.",
+    "description": "The footer copyright"
+  }
+}

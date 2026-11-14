@@ -1,0 +1,34 @@
+{
+  "version.label": {
+    "message": "当前版本",
+    "description": "The label for version current"
+  },
+  "sidebar.userGuidesSidebar.category.Node & Wallet Setup": {
+    "message": "节点与钱包配置",
+    "description": "The label for category 'Node & Wallet Setup' in sidebar 'userGuidesSidebar'"
+  },
+  "sidebar.userGuidesSidebar.category.RandomX CPU Mining": {
+    "message": "RandomX CPU 挖矿",
+    "description": "The label for category 'RandomX CPU Mining' in sidebar 'userGuidesSidebar'"
+  },
+  "sidebar.devGuidesSidebar.category.Build & Operations": {
+    "message": "编译与运维",
+    "description": "The label for category 'Build & Operations' in sidebar 'devGuidesSidebar'"
+  },
+  "sidebar.devGuidesSidebar.category.EVM & Smart Contracts": {
+    "message": "EVM 与智能合约",
+    "description": "The label for category 'EVM & Smart Contracts' in sidebar 'devGuidesSidebar'"
+  },
+  "sidebar.protocolSidebar.category.Network & Consensus": {
+    "message": "网络与共识",
+    "description": "The label for category 'Network & Consensus' in sidebar 'protocolSidebar'"
+  },
+  "sidebar.protocolSidebar.category.JSON-RPC API": {
+    "message": "JSON-RPC API",
+    "description": "The label for category 'JSON-RPC API' in sidebar 'protocolSidebar'"
+  },
+  "sidebar.brandSidebar.category.Brand & Identity": {
+    "message": "品牌与视觉识别",
+    "description": "The label for category 'Brand & Identity' in sidebar 'brandSidebar'"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "link.title.Documentation": {
+    "message": "文档",
+    "description": "The title of the footer links column with title=Documentation in the footer"
+  },
+  "link.title.Ecosystem": {
+    "message": "生态系统",
+    "description": "The title of the footer links column with title=Ecosystem in the footer"
+  },
+  "link.title.Community": {
+    "message": "社区",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.item.label.Overview & Parameters": {
+    "message": "概述与网络参数",
+    "description": "The label of footer link with label=Overview & Parameters linking to /docs/intro"
+  },
+  "link.item.label.Running a Node": {
+    "message": "运行节点",
+    "description": "The label of footer link with label=Running a Node linking to /docs/users/running-a-node"
+  },
+  "link.item.label.Desktop Client": {
+    "message": "桌面客户端",
+    "description": "The label of footer link with label=Desktop Client linking to /docs/users/desktop-client"
+  },
+  "link.item.label.Mining Guide": {
+    "message": "挖矿指南",
+    "description": "The label of footer link with label=Mining Guide linking to /docs/users/mining-guide"
+  },
+  "link.item.label.Developer Guides": {
+    "message": "开发者指南",
+    "description": "The label of footer link with label=Developer Guides linking to /docs/developers/compiling-from-source"
+  },
+  "link.item.label.JSON-RPC Reference": {
+    "message": "JSON-RPC 参考",
+    "description": "The label of footer link with label=JSON-RPC Reference linking to /docs/rpc/endpoints"
+  },
+  "link.item.label.Brand & Design System": {
+    "message": "品牌与设计系统",
+    "description": "The label of footer link with label=Brand & Design System linking to /docs/brand/brand-overview"
+  },
+  "link.item.label.Official Website": {
+    "message": "官方网站",
+    "description": "The label of footer link with label=Official Website linking to https://roguesignal.org"
+  },
+  "link.item.label.Block Explorer": {
+    "message": "区块浏览器",
+    "description": "The label of footer link with label=Block Explorer linking to https://explorer.roguesignal.org"
+  },
+  "link.item.label.Core Chain Repository": {
+    "message": "核心链代码库",
+    "description": "The label of footer link with label=Core Chain Repository linking to https://github.com/roguesignalchain/rogue-core-chain"
+  },
+  "link.item.label.Desktop Client Repository": {
+    "message": "桌面客户端代码库",
+    "description": "The label of footer link with label=Desktop Client Repository linking to https://github.com/roguesignalchain/rogue-desktop-client"
+  },
+  "link.item.label.Discord": {
+    "message": "Discord",
+    "description": "The label of footer link with label=Discord linking to https://discord.gg/c6bwF6Wk6c"
+  },
+  "link.item.label.Telegram Community": {
+    "message": "Telegram 社区",
+    "description": "The label of footer link with label=Telegram Community linking to https://t.me/roguesignalchain"
+  },
+  "link.item.label.X (Twitter)": {
+    "message": "X (Twitter)",
+    "description": "The label of footer link with label=X (Twitter) linking to https://x.com/roguesignal_"
+  },
+  "link.item.label.GitHub Organization": {
+    "message": "GitHub 组织",
+    "description": "The label of footer link with label=GitHub Organization linking to https://github.com/roguesignalchain"
+  },
+  "copyright": {
+    "message": "Copyright © 2026 Rogue Signal Protocol. 基于 Docusaurus 构建。",
+    "description": "The footer copyright"
+  }
+}

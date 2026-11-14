@@ -92,14 +92,27 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'docsSidebar',
+          sidebarId: 'userGuidesSidebar',
           position: 'left',
-          label: 'Docs',
+          label: 'User Guides',
         },
         {
-          to: '/docs/brand/brand-overview',
-          label: 'Brand & Identity',
+          type: 'docSidebar',
+          sidebarId: 'devGuidesSidebar',
           position: 'left',
+          label: 'Developer Guides',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'protocolSidebar',
+          position: 'left',
+          label: 'Protocol & API',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'brandSidebar',
+          position: 'left',
+          label: 'Brand & Identity',
         },
         {
           type: 'localeDropdown',
@@ -133,20 +146,28 @@ const config: Config = {
               to: '/docs/intro',
             },
             {
-              label: 'Brand & Design System',
-              to: '/docs/brand/brand-overview',
+              label: 'Running a Node',
+              to: '/docs/users/running-a-node',
             },
             {
-              label: 'Core Node Setup',
-              to: '/docs/core-chain/getting-started',
+              label: 'Desktop Client',
+              to: '/docs/users/desktop-client',
             },
             {
               label: 'Mining Guide',
-              to: '/docs/mining/randomx-mining',
+              to: '/docs/users/mining-guide',
+            },
+            {
+              label: 'Developer Guides',
+              to: '/docs/developers/compiling-from-source',
             },
             {
               label: 'JSON-RPC Reference',
               to: '/docs/rpc/endpoints',
+            },
+            {
+              label: 'Brand & Design System',
+              to: '/docs/brand/brand-overview',
             },
           ],
         },
